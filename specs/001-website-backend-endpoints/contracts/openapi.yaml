@@ -11,6 +11,60 @@ paths:
       responses:
         '200':
           description: API is available
+  /home:
+    get:
+      summary: Website home summaries
+      responses:
+        '200':
+          description: Latest published courses, books, and articles
+  /categories:
+    get:
+      summary: Public active categories
+      responses:
+        '200':
+          description: Paginated category collection
+  /courses:
+    get:
+      summary: Public published course catalog
+      responses:
+        '200':
+          description: Paginated course collection
+  /courses/{slug}:
+    get:
+      summary: Public published course details
+      responses:
+        '200':
+          description: Course details with public sections and lesson metadata
+        '404':
+          description: Course is not found or is not published
+  /books:
+    get:
+      summary: Public published book catalog
+      responses:
+        '200':
+          description: Paginated book collection
+  /books/{slug}:
+    get:
+      summary: Public published book details
+      responses:
+        '200':
+          description: Book details without protected file links
+        '404':
+          description: Book is not found or is not published
+  /articles:
+    get:
+      summary: Public published article catalog
+      responses:
+        '200':
+          description: Paginated article collection
+  /articles/{slug}:
+    get:
+      summary: Public published article details
+      responses:
+        '200':
+          description: Article details
+        '404':
+          description: Article is not found or is not published
   /auth/register:
     post:
       summary: Register a student account
