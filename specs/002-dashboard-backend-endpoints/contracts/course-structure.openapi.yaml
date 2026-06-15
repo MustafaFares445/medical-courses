@@ -1,0 +1,247 @@
+openapi: 3.1.0
+info:
+  title: Medical Courses Dashboard Course Structure API
+  version: 0.1.0
+servers:
+  - url: /api
+paths:
+  /admin/courses:
+    get:
+      summary: List admin courses
+      tags: [Admin Courses]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - in: query
+          name: perPage
+          schema: { type: integer, minimum: 1, maximum: 100 }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: filter[status]
+          schema: { type: string, enum: [draft, published, hidden] }
+        - in: query
+          name: filter[categoryId]
+          schema: { type: integer }
+        - in: query
+          name: sort
+          schema: { type: string, enum: [title, -title, price, -price, publishedAt, -publishedAt, createdAt, -createdAt] }
+      responses:
+        '200': { description: Paginated courses }
+    post:
+      summary: Create course
+      tags: [Admin Courses]
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoursePayload'
+      responses:
+        '201': { description: Created course }
+        '422': { description: Validation error }
+  /admin/courses/{course}:
+    get:
+      summary: Show admin course
+      tags: [Admin Courses]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200': { description: Course detail }
+    patch:
+      summary: Update course
+      tags: [Admin Courses]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CoursePayload'
+      responses:
+        '200': { description: Updated course }
+    delete:
+      summary: Soft delete course
+      tags: [Admin Courses]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '204': { description: Deleted course }
+  /admin/courses/{course}/sections:
+    get:
+      summary: List course sections
+      tags: [Admin Course Sections]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      responses:
+        '200': { description: Paginated sections }
+    post:
+      summary: Create course section
+      tags: [Admin Course Sections]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CourseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseSectionPayload'
+      responses:
+        '201': { description: Created section }
+  /admin/course-sections/{section}:
+    get:
+      summary: Show course section
+      tags: [Admin Course Sections]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SectionId'
+      responses:
+        '200': { description: Section detail }
+    patch:
+      summary: Update course section
+      tags: [Admin Course Sections]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SectionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseSectionPayload'
+      responses:
+        '200': { description: Updated section }
+    delete:
+      summary: Delete empty course section
+      tags: [Admin Course Sections]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SectionId'
+      responses:
+        '204': { description: Deleted section }
+        '409': { description: Section has lessons }
+  /admin/course-sections/{section}/lessons:
+    get:
+      summary: List lessons in a section
+      tags: [Admin Lessons]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SectionId'
+      responses:
+        '200': { description: Paginated lessons }
+    post:
+      summary: Create lesson
+      tags: [Admin Lessons]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SectionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonPayload'
+      responses:
+        '201': { description: Created lesson }
+  /admin/lessons/{lesson}:
+    get:
+      summary: Show lesson
+      tags: [Admin Lessons]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LessonId'
+      responses:
+        '200': { description: Lesson detail }
+    patch:
+      summary: Update lesson
+      tags: [Admin Lessons]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LessonId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LessonPayload'
+      responses:
+        '200': { description: Updated lesson }
+    delete:
+      summary: Delete lesson
+      tags: [Admin Lessons]
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/LessonId'
+      responses:
+        '204': { description: Deleted lesson }
+components:
+  parameters:
+    CourseId:
+      name: course
+      in: path
+      required: true
+      schema: { type: integer }
+    SectionId:
+      name: section
+      in: path
+      required: true
+      schema: { type: integer }
+    LessonId:
+      name: lesson
+      in: path
+      required: true
+      schema: { type: integer }
+  schemas:
+    CoursePayload:
+      type: object
+      properties:
+        categoryId: { type: [integer, 'null'] }
+        title: { type: string }
+        slug: { type: string }
+        shortDescription: { type: [string, 'null'] }
+        description: { type: [string, 'null'] }
+        price: { type: string }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        status: { type: string, enum: [draft, published, hidden] }
+    CourseSectionPayload:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: [string, 'null'] }
+        sortOrder: { type: integer, minimum: 0 }
+    LessonPayload:
+      type: object
+      properties:
+        title: { type: string }
+        slug: { type: string }
+        summary: { type: [string, 'null'] }
+        content: { type: [string, 'null'] }
+        videoUrl: { type: [string, 'null'], format: uri }
+        sortOrder: { type: integer, minimum: 0 }
+        status: { type: string, enum: [draft, published, hidden] }
+  securitySchemes:
+    sanctumAuth:
+      type: http
+      scheme: bearer
