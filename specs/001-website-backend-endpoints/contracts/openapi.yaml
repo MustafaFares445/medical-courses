@@ -1,0 +1,54 @@
+openapi: 3.1.0
+info:
+  title: Medical Courses Website API
+  version: 0.1.0
+servers:
+  - url: /api
+paths:
+  /health:
+    get:
+      summary: API health check
+      responses:
+        '200':
+          description: API is available
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: ok
+                      service:
+                        type: string
+                        example: medical-courses-api
+  /me:
+    get:
+      summary: Current authenticated user
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Current user response
+        '401':
+          description: Guest user is not authenticated
+  /admin/health:
+    get:
+      summary: Admin route health check
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Admin user is authorized
+        '401':
+          description: Guest user is not authenticated
+        '403':
+          description: Authenticated user is not an admin
+components:
+  securitySchemes:
+    sanctum:
+      type: http
+      scheme: bearer
