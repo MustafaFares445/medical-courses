@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Data\Auth\RegisterData;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class RegisterRequest extends FormRequest
@@ -13,8 +14,24 @@ final class RegisterRequest extends FormRequest
         return true;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
-        return [];
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'confirmed', 'min:8'],
+        ];
+    }
+
+    public function data(): RegisterData
+    {
+        $validated = $this->validated();
+
+        return new RegisterData(
+            name: (string) $validated['name'],
+            email: (string) $validated['email'],
+            password: (string) $validated['password'],
+        );
     }
 }
