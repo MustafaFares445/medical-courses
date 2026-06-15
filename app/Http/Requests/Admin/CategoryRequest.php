@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 final class CategoryRequest extends FormRequest
@@ -13,6 +14,16 @@ final class CategoryRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $name = $this->input('name');
+        $slug = $this->input('slug');
+
+        if (is_string($name) && $name !== '' && (! is_string($slug) || $slug === '')) {
+            $this->merge(['slug' => Str::slug($name)]);
+        }
     }
 
     /** @return array<string, mixed> */
