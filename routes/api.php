@@ -59,5 +59,5 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function (): void {
     Route::get('/health', fn () => ApiResponse::success(['status' => 'admin']));
     Route::get('/overview', Admin\OverviewController::class);
-    Route::apiResource('/categories', Admin\CategoryController::class);
+    Route::apiResource('categories', Admin\CategoryController::class);
 });
