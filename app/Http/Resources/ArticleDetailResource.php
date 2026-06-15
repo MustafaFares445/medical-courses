@@ -11,6 +11,8 @@ final class ArticleDetailResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $image = $this->getFirstMediaUrl('article-image') ?: null;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -18,7 +20,7 @@ final class ArticleDetailResource extends JsonResource
             'excerpt' => $this->excerpt,
             'body' => $this->body,
             'category' => CategoryResource::make($this->whenLoaded('category')),
-            'image' => null,
+            'image' => $image,
             'publishedAt' => $this->published_at?->toISOString(),
         ];
     }
