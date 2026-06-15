@@ -138,6 +138,28 @@ paths:
           description: Purchased courses and books
         '401':
           description: Guest user is not authenticated
+  /my/orders:
+    get:
+      summary: Current user order history
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Paginated current user orders
+        '401':
+          description: Guest user is not authenticated
+  /my/orders/{orderNumber}:
+    get:
+      summary: Current user order detail
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Order detail with items and safe payment summaries
+        '401':
+          description: Guest user is not authenticated
+        '404':
+          description: Order is not found for the current user
   /my/courses/{course}/lessons/{lesson}:
     get:
       summary: Protected purchased lesson access
