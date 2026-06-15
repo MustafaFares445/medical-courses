@@ -1,0 +1,74 @@
+openapi: 3.1.0
+info:
+  title: Medical Courses Dashboard API
+  version: 0.1.0
+servers:
+  - url: /api
+paths:
+  /admin/overview:
+    get:
+      summary: Get dashboard overview metrics
+      tags:
+        - Admin Overview
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: Dashboard metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - totalUsers
+                      - totalCourses
+                      - totalPublishedCourses
+                      - totalBooks
+                      - totalPublishedBooks
+                      - totalArticles
+                      - totalPublishedArticles
+                      - totalPaidOrders
+                      - totalRevenue
+                      - recentOrders
+                      - recentPayments
+                    properties:
+                      totalUsers:
+                        type: integer
+                      totalCourses:
+                        type: integer
+                      totalPublishedCourses:
+                        type: integer
+                      totalBooks:
+                        type: integer
+                      totalPublishedBooks:
+                        type: integer
+                      totalArticles:
+                        type: integer
+                      totalPublishedArticles:
+                        type: integer
+                      totalPaidOrders:
+                        type: integer
+                      totalRevenue:
+                        type: string
+                      recentOrders:
+                        type: array
+                        items:
+                          type: object
+                      recentPayments:
+                        type: array
+                        items:
+                          type: object
+        '401':
+          description: Guest is not authenticated
+        '403':
+          description: Authenticated user is not admin
+components:
+  securitySchemes:
+    sanctumAuth:
+      type: http
+      scheme: bearer
