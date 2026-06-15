@@ -25,13 +25,13 @@
 
 ## Phase 4 — Courses, Sections, Lessons
 
-- [ ] T015 Create `Admin\CourseController`.
-- [ ] T016 Create `Admin\CourseSectionController`.
-- [ ] T017 Create `Admin\LessonController`.
-- [ ] T018 Add course, section, and lesson requests/resources/services.
-- [ ] T019 Add media replacement handling for course thumbnails and lesson videos.
-- [ ] T020 Add safe delete behavior for purchased courses.
-- [ ] T021 Add course/section/lesson Pest tests.
+- [x] T015 Create `Admin\CourseController`.
+- [x] T016 Create `Admin\CourseSectionController`.
+- [x] T017 Create `Admin\LessonController`.
+- [x] T018 Add course, section, and lesson requests/resources/services.
+- [x] T019 Add media replacement handling for course thumbnails and lesson videos.
+- [x] T020 Add safe delete behavior for purchased courses.
+- [x] T021 Add course/section/lesson Pest tests.
 
 ## Phase 5 — Books and Articles
 
