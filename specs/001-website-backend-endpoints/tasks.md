@@ -15,14 +15,14 @@
 
 ## Phase 2: Database and Core Models
 
-- [ ] T011 Create content migrations for categories, courses, course sections, lessons, books, and articles.
-- [ ] T012 Create commerce migrations for orders, order items, payments, course access, and book access.
-- [ ] T013 Add Spatie Media Library migration/config publishing output.
-- [ ] T014 Add models and relationships.
-- [ ] T015 Add model scopes for published/search/filter/status.
-- [ ] T016 Add factories for all main entities.
-- [ ] T017 Add admin user seeder and optional category seeder.
-- [ ] T018 Add migration/model/factory tests.
+- [x] T011 Create content migrations for categories, courses, course sections, lessons, books, and articles.
+- [x] T012 Create commerce migrations for orders, order items, payments, course access, and book access.
+- [x] T013 Add Spatie Media Library migration/config publishing output.
+- [x] T014 Add models and relationships.
+- [x] T015 Add model scopes for published/search/filter/status.
+- [x] T016 Add factories for all main entities.
+- [x] T017 Add admin user seeder and optional category seeder.
+- [x] T018 Add migration/model/factory tests.
 
 ## Phase 3: Authentication
 
