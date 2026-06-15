@@ -35,11 +35,11 @@
 
 ## Phase 5 — Books and Articles
 
-- [ ] T022 Create `Admin\BookController` and related request/resource/service.
-- [ ] T023 Create `Admin\ArticleController` and related request/resource/service.
-- [ ] T024 Add media replacement handling for covers, private book files, and article images.
-- [ ] T025 Add safe delete behavior for purchased books.
-- [ ] T026 Add book/article Pest tests.
+- [x] T022 Create admin book controller and related request/resource/service.
+- [x] T023 Create admin article controller and related request/resource/service.
+- [x] T024 Add media replacement handling for covers, private book files, and article images.
+- [x] T025 Add safe delete behavior for purchased books.
+- [x] T026 Add book/article Pest tests.
 
 ## Phase 6 — Users, Orders, Payments
 
