@@ -5,11 +5,14 @@ declare(strict_types=1);
 use App\Http\Controllers\API\AccountRecoveryController;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BookAccessController;
 use App\Http\Controllers\API\BookController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\CurrentUserController;
 use App\Http\Controllers\API\HomeController;
+use App\Http\Controllers\API\LibraryController;
+use App\Http\Controllers\API\ProtectedLessonController;
 use App\Support\ApiResponse;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +42,9 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
     Route::patch('/me', [CurrentUserController::class, 'update']);
     Route::prefix('my')->group(function (): void {
         Route::get('/health', fn () => ApiResponse::success(['status' => 'authenticated']));
+        Route::get('/library', LibraryController::class);
+        Route::get('/courses/{course}/lessons/{lesson}', [ProtectedLessonController::class, 'show']);
+        Route::get('/books/{book}/access', [BookAccessController::class, 'show']);
     });
 });
 
