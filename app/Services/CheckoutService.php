@@ -24,10 +24,10 @@ final class CheckoutService
     public function create(User $user, CheckoutData $data): array
     {
         $preparedItems = $this->prepareItems($user, $data);
+        $currency = $this->currency($preparedItems);
 
-        $order = DB::transaction(function () use ($user, $preparedItems): Order {
+        $order = DB::transaction(function () use ($user, $preparedItems, $currency): Order {
             $total = collect($preparedItems)->sum('price');
-            $currency = strtoupper((string) $preparedItems[0]['currency']);
 
             $order = Order::query()->create([
                 'user_id' => $user->id,
@@ -35,7 +35,7 @@ final class CheckoutService
                 'status' => Order::STATUS_PENDING,
                 'subtotal' => $total,
                 'total' => $total,
-                'currency' => $currency,
+                'currency' => strtoupper($currency),
             ]);
 
             foreach ($preparedItems as $item) {
@@ -45,7 +45,7 @@ final class CheckoutService
                     'item_id' => $item['id'],
                     'title_snapshot' => $item['title'],
                     'price_snapshot' => $item['price'],
-                    'currency' => $item['currency'],
+                    'currency' => strtoupper($currency),
                 ]);
             }
 
@@ -54,7 +54,7 @@ final class CheckoutService
 
         $session = $this->stripe->createSession(
             order: $order,
-            lineItems: $this->lineItems($preparedItems),
+            lineItems: $this->lineItems($preparedItems, $currency),
             successUrl: $data->successUrl,
             cancelUrl: $data->cancelUrl,
         );
@@ -132,12 +132,24 @@ final class CheckoutService
         return array_values($items);
     }
 
-    private function lineItems(array $items): array
+    private function currency(array $items): string
+    {
+        $allowed = strtolower((string) config('services.stripe.currency', 'usd'));
+        $currencies = collect($items)->pluck('currency')->map(fn ($currency): string => strtolower((string) $currency))->unique()->values();
+
+        if ($currencies->count() !== 1 || $currencies->first() !== $allowed) {
+            throw ValidationException::withMessages(['items' => 'Selected items currency is not supported.']);
+        }
+
+        return $allowed;
+    }
+
+    private function lineItems(array $items, string $currency): array
     {
         return collect($items)->map(fn (array $item): array => [
             'quantity' => 1,
             'price_data' => [
-                'currency' => strtolower((string) $item['currency']),
+                'currency' => $currency,
                 'unit_amount' => (int) round((float) $item['price'] * 100),
                 'product_data' => [
                     'name' => $item['title'],
