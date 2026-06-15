@@ -128,6 +128,44 @@ paths:
           description: Guest user is not authenticated
         '422':
           description: Validation error
+  /my/library:
+    get:
+      summary: Current user purchased course and book library
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Purchased courses and books
+        '401':
+          description: Guest user is not authenticated
+  /my/courses/{course}/lessons/{lesson}:
+    get:
+      summary: Protected purchased lesson access
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Protected lesson content
+        '401':
+          description: Guest user is not authenticated
+        '403':
+          description: Current user has not purchased the course
+        '404':
+          description: Lesson is not found, not published, or mismatched
+  /my/books/{book}/access:
+    get:
+      summary: Protected purchased book file access
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: Protected book access URL
+        '401':
+          description: Guest user is not authenticated
+        '403':
+          description: Current user has not purchased the book
+        '404':
+          description: Book file is not available
   /admin/health:
     get:
       summary: Admin route health check
