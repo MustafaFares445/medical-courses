@@ -111,6 +111,6 @@ it('accepts missing orders without creating payments or access records', functio
 });
 
 it('rejects invalid webhook payloads', function (): void {
-    $this->post('/api/stripe/webhook', [], ['CONTENT_TYPE' => 'application/json'])
+    $this->call('POST', '/api/stripe/webhook', [], [], [], ['CONTENT_TYPE' => 'application/json'], '{bad-json')
         ->assertBadRequest();
 });
