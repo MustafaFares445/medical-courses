@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\API\AccountRecoveryController;
+use App\Http\Controllers\API\Admin;
 use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BookAccessController;
@@ -57,4 +58,5 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function (): void {
     Route::get('/health', fn () => ApiResponse::success(['status' => 'admin']));
+    Route::get('/overview', Admin\OverviewController::class);
 });
