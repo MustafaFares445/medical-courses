@@ -42,7 +42,7 @@ final class ArticleRequest extends FormRequest
             'title' => [$required, 'string', 'max:255'],
             'slug' => ['sometimes', 'nullable', 'string', 'max:255', Rule::unique('articles', 'slug')->ignore($article?->id)],
             'excerpt' => ['sometimes', 'nullable', 'string', 'max:1000'],
-            'body' => ['required_if:status,published', 'sometimes', 'nullable', 'string'],
+            'body' => ['required_if:status,published', 'nullable', 'string'],
             'status' => [$required, 'string', 'in:draft,published,hidden'],
             'articleImage' => ['sometimes', 'nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
         ];
