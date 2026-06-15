@@ -9,6 +9,7 @@ use App\Models\CourseAccess;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Config;
 
 function stripeCheckoutEvent(string $eventId, string $type, string $sessionId, int $amount = 10000): array
 {
@@ -112,5 +113,16 @@ it('accepts missing orders without creating payments or access records', functio
 
 it('rejects invalid webhook payloads', function (): void {
     $this->call('POST', '/api/stripe/webhook', [], [], [], ['CONTENT_TYPE' => 'application/json'], '{bad-json')
+        ->assertBadRequest();
+});
+
+it('rejects invalid webhook signatures when verification is enabled', function (): void {
+    Config::set('services.stripe.webhook', 'whsec_test');
+
+    $this->postJson('/api/stripe/webhook', stripeCheckoutEvent(
+        eventId: 'evt_bad_signature',
+        type: 'checkout.session.completed',
+        sessionId: 'cs_bad_signature',
+    ), ['Stripe-Signature' => 'invalid'])
         ->assertBadRequest();
 });
