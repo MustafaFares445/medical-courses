@@ -11,13 +11,15 @@ final class ArticleListResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $image = $this->getFirstMediaUrl('article-image') ?: null;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
             'excerpt' => $this->excerpt,
             'category' => CategoryResource::make($this->whenLoaded('category')),
-            'image' => null,
+            'image' => $image,
             'publishedAt' => $this->published_at?->toISOString(),
         ];
     }
