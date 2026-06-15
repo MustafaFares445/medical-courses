@@ -18,9 +18,12 @@ final class ProtectedLessonResource extends JsonResource
             'summary' => $this->summary,
             'content' => $this->content,
             'videoUrl' => $this->video_url,
+            'videoMediaUrl' => null,
             'courseId' => $this->section?->course_id,
             'sectionId' => $this->course_section_id,
             'sortOrder' => $this->sort_order,
+            'previousLesson' => null,
+            'nextLesson' => null,
         ];
     }
 }
