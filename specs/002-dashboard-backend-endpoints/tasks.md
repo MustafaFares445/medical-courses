@@ -10,18 +10,18 @@
 
 ## Phase 2 — Shared Admin Infrastructure
 
-- [ ] T006 [P] Create shared admin filter request helpers.
-- [ ] T007 [P] Create shared publish transition service/helper.
-- [ ] T008 [P] Create shared media replacement service for resource-specific upload endpoints.
-- [ ] T009 [P] Create admin API resources for common response shapes.
+- [x] T006 [P] Create shared admin filter request helpers.
+- [x] T007 [P] Create shared publish transition service/helper.
+- [x] T008 [P] Create shared media replacement service for resource-specific upload endpoints.
+- [x] T009 [P] Create admin API resources for common response shapes.
 
 ## Phase 3 — Categories
 
-- [ ] T010 Create `Admin\CategoryController`.
-- [ ] T011 Create category FormRequest and FilterRequest.
-- [ ] T012 Add category service with create/update/delete conflict handling.
-- [ ] T013 Add category admin routes.
-- [ ] T014 Add category Pest tests.
+- [x] T010 Create `Admin\CategoryController`.
+- [x] T011 Create category FormRequest and FilterRequest.
+- [x] T012 Add category service with create/update/delete conflict handling.
+- [x] T013 Add category admin routes.
+- [x] T014 Add category Pest tests.
 
 ## Phase 4 — Courses, Sections, Lessons
 
