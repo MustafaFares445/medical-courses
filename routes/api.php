@@ -59,5 +59,19 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function (): void {
     Route::get('/health', fn () => ApiResponse::success(['status' => 'admin']));
     Route::get('/overview', Admin\OverviewController::class);
+
     Route::apiResource('categories', Admin\CategoryController::class);
+    Route::apiResource('courses', Admin\CourseController::class);
+
+    Route::get('courses/{course}/sections', [Admin\CourseSectionController::class, 'index']);
+    Route::post('courses/{course}/sections', [Admin\CourseSectionController::class, 'store']);
+    Route::get('course-sections/{section}', [Admin\CourseSectionController::class, 'show']);
+    Route::patch('course-sections/{section}', [Admin\CourseSectionController::class, 'update']);
+    Route::delete('course-sections/{section}', [Admin\CourseSectionController::class, 'destroy']);
+
+    Route::get('course-sections/{section}/lessons', [Admin\LessonController::class, 'index']);
+    Route::post('course-sections/{section}/lessons', [Admin\LessonController::class, 'store']);
+    Route::get('lessons/{lesson}', [Admin\LessonController::class, 'show']);
+    Route::patch('lessons/{lesson}', [Admin\LessonController::class, 'update']);
+    Route::delete('lessons/{lesson}', [Admin\LessonController::class, 'destroy']);
 });
