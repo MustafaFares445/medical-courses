@@ -11,6 +11,8 @@ final class BookListResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $image = $this->getFirstMediaUrl('cover') ?: null;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -19,7 +21,7 @@ final class BookListResource extends JsonResource
             'price' => $this->price,
             'currency' => $this->currency,
             'category' => CategoryResource::make($this->whenLoaded('category')),
-            'cover' => null,
+            'cover' => $image,
             'publishedAt' => $this->published_at?->toISOString(),
         ];
     }
