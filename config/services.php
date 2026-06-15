@@ -29,8 +29,10 @@ return [
     ],
 
     'stripe' => [
-        'key' => env('STRIPE_KEY'),
-        'webhook' => env('STRIPE_WEBHOOK'),
+        'public' => env('STRIPE_KEY'),
+        'api' => env('STRIPE_SECRET'),
+        'webhook' => env('STRIPE_WEBHOOK_SECRET'),
+        'currency' => env('STRIPE_CURRENCY', 'usd'),
     ],
 
     'slack' => [
