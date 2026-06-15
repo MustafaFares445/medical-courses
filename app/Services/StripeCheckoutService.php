@@ -9,10 +9,9 @@ use Stripe\StripeClient;
 
 final class StripeCheckoutService
 {
-    /** @param list<array<string, mixed>> $lineItems */
     public function createSession(Order $order, array $lineItems, string $successUrl, string $cancelUrl): array
     {
-        $client = new StripeClient((string) config('services.stripe.key'));
+        $client = new StripeClient((string) config('services.stripe.api'));
 
         $session = $client->checkout->sessions->create([
             'mode' => 'payment',
