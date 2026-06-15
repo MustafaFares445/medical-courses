@@ -53,7 +53,7 @@ final class AccountService
     {
         $currentAccessToken = $user->currentAccessToken();
 
-        if ($currentAccessToken !== null) {
+        if ($currentAccessToken !== null && method_exists($currentAccessToken, 'delete')) {
             $currentAccessToken->delete();
         }
 
