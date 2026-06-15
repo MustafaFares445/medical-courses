@@ -24,7 +24,7 @@ it('returns dashboard overview metrics for admins', function (): void {
     Sanctum::actingAs(User::factory()->admin()->create());
 
     Course::factory()->count(2)->published()->create();
-    Course::factory()->draft()->create();
+    Course::factory()->create();
     Book::factory()->published()->create();
     Article::factory()->published()->create();
 
