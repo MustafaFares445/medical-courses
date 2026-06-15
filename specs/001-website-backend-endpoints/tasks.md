@@ -48,8 +48,8 @@
 
 ## Phase 6: User Orders
 
-- [ ] T032 Add user order list/detail endpoints.
-- [ ] T033 Add user order isolation tests.
+- [x] T032 Add user order list/detail endpoints.
+- [x] T033 Add user order isolation tests.
 
 ## Phase 7: Checkout and Stripe Webhook
 
