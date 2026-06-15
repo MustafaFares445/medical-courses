@@ -3,13 +3,13 @@
 ## Phase 1: Foundation
 
 - [x] T001 Add required Composer packages.
-- [x] T002 Add API route loading in `bootstrap/app.php`.
-- [x] T003 Add initial `routes/api.php` with health endpoints.
+- [x] T002 Add API route loading in bootstrap/app.php.
+- [x] T003 Add initial routes/api.php with health endpoints.
 - [x] T004 Add Sanctum configuration.
 - [x] T005 Add CORS configuration.
-- [x] T006 Add simple `admin` middleware using `user_type`.
+- [x] T006 Add simple admin middleware using user_type.
 - [x] T007 Add API response helper.
-- [x] T008 Add `user_type` support to User model, factory, and migration.
+- [x] T008 Add user_type support to User model, factory, and migration.
 - [x] T009 Add Pest bootstrap and foundation tests.
 - [x] T010 Initialize Spec Kit workspace and project constitution.
 
@@ -32,12 +32,12 @@
 
 ## Phase 4: Public Website Content APIs
 
-- [ ] T022 Add home endpoint.
-- [ ] T023 Add categories endpoint.
-- [ ] T024 Add courses list/detail endpoints.
-- [ ] T025 Add books list/detail endpoints.
-- [ ] T026 Add articles list/detail endpoints.
-- [ ] T027 Add public visibility and resource leak tests.
+- [x] T022 Add home endpoint.
+- [x] T023 Add categories endpoint.
+- [x] T024 Add courses list/detail endpoints.
+- [x] T025 Add books list/detail endpoints.
+- [x] T026 Add articles list/detail endpoints.
+- [x] T027 Add public visibility and resource leak tests.
 
 ## Phase 5: Library and Protected Access
 
