@@ -11,6 +11,8 @@ final class CourseListResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $image = $this->getFirstMediaUrl('thumbnail') ?: null;
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -19,7 +21,7 @@ final class CourseListResource extends JsonResource
             'price' => $this->price,
             'currency' => $this->currency,
             'category' => CategoryResource::make($this->whenLoaded('category')),
-            'thumbnail' => null,
+            'thumbnail' => $image,
             'publishedAt' => $this->published_at?->toISOString(),
         ];
     }
