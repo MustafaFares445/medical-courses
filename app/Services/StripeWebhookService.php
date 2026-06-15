@@ -9,7 +9,6 @@ use App\Models\Payment;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Stripe\Webhook;
-use Throwable;
 
 final class StripeWebhookService
 {
@@ -49,8 +48,12 @@ final class StripeWebhookService
             return;
         }
 
-        if ($type === 'checkout.session.completed') {
+        if ($type === 'checkout.session.completed' || $type === 'checkout.session.async_payment_succeeded') {
             $this->markPaid($order, $event, $session, $eventId, $sessionId);
+            return;
+        }
+
+        if ($order->status === Order::STATUS_PAID) {
             return;
         }
 
