@@ -53,8 +53,8 @@
 
 ## Phase 7: Checkout and Stripe Webhook
 
-- [ ] T034 Add checkout request, DTOs, services, and controller.
-- [ ] T035 Add Stripe checkout session integration.
-- [ ] T036 Add Stripe webhook verification and processing.
-- [ ] T037 Add access granting service.
-- [ ] T038 Add checkout and webhook tests.
+- [x] T034 Add checkout request, DTOs, services, and controller.
+- [x] T035 Add Stripe checkout session integration.
+- [x] T036 Add Stripe webhook verification and processing.
+- [x] T037 Add access granting service.
+- [x] T038 Add checkout and webhook tests.
