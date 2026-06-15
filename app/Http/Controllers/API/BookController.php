@@ -25,6 +25,14 @@ final class BookController extends Controller
             $query->whereHas('category', fn ($category) => $category->where('slug', $request->categorySlug()));
         }
 
+        if ($request->priceMin() !== null) {
+            $query->where('price', '>=', $request->priceMin());
+        }
+
+        if ($request->priceMax() !== null) {
+            $query->where('price', '<=', $request->priceMax());
+        }
+
         return BookListResource::collection(
             $query->orderBy($request->sortColumn(), $request->sortDirection())
                 ->paginate($request->perPage())
