@@ -11,20 +11,48 @@ paths:
       responses:
         '200':
           description: API is available
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      status:
-                        type: string
-                        example: ok
-                      service:
-                        type: string
-                        example: medical-courses-api
+  /auth/register:
+    post:
+      summary: Register a student account
+      responses:
+        '201':
+          description: Student account created
+        '422':
+          description: Validation error
+  /auth/login:
+    post:
+      summary: Login and return current user plus access token
+      responses:
+        '200':
+          description: User logged in
+        '422':
+          description: Invalid credentials or validation error
+  /auth/logout:
+    post:
+      summary: Logout current user
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: User logged out
+        '401':
+          description: Guest user is not authenticated
+  /auth/forgot-password:
+    post:
+      summary: Send password reset link
+      responses:
+        '200':
+          description: Reset link flow accepted
+        '422':
+          description: Validation error
+  /auth/reset-password:
+    post:
+      summary: Reset password using token
+      responses:
+        '200':
+          description: Password reset successful
+        '422':
+          description: Invalid token or validation error
   /me:
     get:
       summary: Current authenticated user
@@ -35,6 +63,17 @@ paths:
           description: Current user response
         '401':
           description: Guest user is not authenticated
+    patch:
+      summary: Update current authenticated user profile
+      security:
+        - sanctum: []
+      responses:
+        '200':
+          description: User profile updated
+        '401':
+          description: Guest user is not authenticated
+        '422':
+          description: Validation error
   /admin/health:
     get:
       summary: Admin route health check
