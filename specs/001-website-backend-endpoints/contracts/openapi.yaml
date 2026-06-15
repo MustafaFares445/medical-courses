@@ -87,6 +87,38 @@ paths:
         '403':
           description: Authenticated user is not an admin
 components:
+  schemas:
+    AuthResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token:
+              type: string
+    UserResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        userType:
+          type: string
+          enum: [student, admin]
   securitySchemes:
     sanctum:
       type: http
