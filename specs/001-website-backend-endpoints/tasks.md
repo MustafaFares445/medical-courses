@@ -26,9 +26,9 @@
 
 ## Phase 3: Authentication
 
-- [ ] T019 Add auth requests, DTOs, services, resources, and controllers.
-- [ ] T020 Add register/login/logout/password reset/profile routes.
-- [ ] T021 Add authentication feature tests.
+- [x] T019 Add auth requests, DTOs, services, resources, and controllers.
+- [x] T020 Add register/login/logout/password reset/profile routes.
+- [x] T021 Add authentication feature tests.
 
 ## Phase 4: Public Website Content APIs
 
