@@ -11,6 +11,13 @@ final class OrderItemResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        return [];
+        return [
+            'id' => $this->id,
+            'type' => $this->item_type,
+            'itemId' => $this->item_id,
+            'title' => $this->title_snapshot,
+            'price' => $this->price_snapshot,
+            'currency' => $this->currency,
+        ];
     }
 }
