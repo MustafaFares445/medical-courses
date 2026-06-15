@@ -41,10 +41,10 @@
 
 ## Phase 5: Library and Protected Access
 
-- [ ] T028 Add library endpoint.
-- [ ] T029 Add protected lesson endpoint.
-- [ ] T030 Add protected book access endpoint.
-- [ ] T031 Add protected access tests.
+- [x] T028 Add library endpoint.
+- [x] T029 Add protected lesson endpoint.
+- [x] T030 Add protected book access endpoint.
+- [x] T031 Add protected access tests.
 
 ## Phase 6: User Orders
 
