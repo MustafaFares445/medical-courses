@@ -41,13 +41,13 @@
 - [x] T025 Add safe delete behavior for purchased books.
 - [x] T026 Add book/article Pest tests.
 
-## Phase 6 — Users, Orders, Payments
+## Phase 6 — Operational Read Views
 
-- [ ] T027 Create `Admin\UserController` index/show.
-- [ ] T028 Create `Admin\OrderController` index/show.
-- [ ] T029 Create `Admin\PaymentController` index/show.
-- [ ] T030 Add users/orders/payments filters and resources.
-- [ ] T031 Add admin operational view Pest tests.
+- [x] T027 Create admin user index/show.
+- [x] T028 Create admin order index/show.
+- [x] T029 Create admin payment index/show.
+- [x] T030 Add operational filters and resources.
+- [x] T031 Add admin operational view Pest tests.
 
 ## Phase 7 — Final Validation
 
