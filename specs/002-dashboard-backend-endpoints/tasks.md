@@ -51,7 +51,7 @@
 
 ## Phase 7 — Final Validation
 
-- [ ] T032 Run focused admin test suite.
-- [ ] T033 Run full backend test suite.
-- [ ] T034 Review route list and OpenAPI contract.
-- [ ] T035 Confirm V2 exclusions are absent.
+- [ ] T032 Run focused admin test suite. Not run in connector session; see `final-validation.md`.
+- [ ] T033 Run full backend test suite. Not run in connector session; see `final-validation.md`.
+- [x] T034 Review route list and OpenAPI contract.
+- [x] T035 Confirm V2 exclusions are absent.
