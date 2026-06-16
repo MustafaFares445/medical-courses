@@ -1,0 +1,57 @@
+# Tasks: Dashboard Backend API Endpoints
+
+## Phase 1 — Overview Slice
+
+- [x] T001 Create dashboard backend spec-kit folder.
+- [x] T002 Add `/api/admin/overview` route behind `auth:sanctum` and `admin` middleware.
+- [x] T003 Implement `DashboardOverviewService`.
+- [x] T004 Implement `Admin\OverviewController`.
+- [x] T005 Add Pest tests for overview authorization and response structure.
+
+## Phase 2 — Shared Admin Infrastructure
+
+- [x] T006 [P] Create shared admin filter request helpers.
+- [x] T007 [P] Create shared publish transition service/helper.
+- [x] T008 [P] Create shared media replacement service for resource-specific upload endpoints.
+- [x] T009 [P] Create admin API resources for common response shapes.
+
+## Phase 3 — Categories
+
+- [x] T010 Create `Admin\CategoryController`.
+- [x] T011 Create category FormRequest and FilterRequest.
+- [x] T012 Add category service with create/update/delete conflict handling.
+- [x] T013 Add category admin routes.
+- [x] T014 Add category Pest tests.
+
+## Phase 4 — Courses, Sections, Lessons
+
+- [x] T015 Create `Admin\CourseController`.
+- [x] T016 Create `Admin\CourseSectionController`.
+- [x] T017 Create `Admin\LessonController`.
+- [x] T018 Add course, section, and lesson requests/resources/services.
+- [x] T019 Add media replacement handling for course thumbnails and lesson videos.
+- [x] T020 Add safe delete behavior for purchased courses.
+- [x] T021 Add course/section/lesson Pest tests.
+
+## Phase 5 — Books and Articles
+
+- [x] T022 Create admin book controller and related request/resource/service.
+- [x] T023 Create admin article controller and related request/resource/service.
+- [x] T024 Add media replacement handling for covers, private book files, and article images.
+- [x] T025 Add safe delete behavior for purchased books.
+- [x] T026 Add book/article Pest tests.
+
+## Phase 6 — Operational Read Views
+
+- [x] T027 Create admin user index/show.
+- [x] T028 Create admin order index/show.
+- [x] T029 Create admin payment index/show.
+- [x] T030 Add operational filters and resources.
+- [x] T031 Add admin operational view Pest tests.
+
+## Phase 7 — Final Validation
+
+- [ ] T032 Run focused admin test suite. Not run in connector session; see `final-validation.md`.
+- [ ] T033 Run full backend test suite. Not run in connector session; see `final-validation.md`.
+- [x] T034 Review route list and OpenAPI contract.
+- [x] T035 Confirm V2 exclusions are absent.

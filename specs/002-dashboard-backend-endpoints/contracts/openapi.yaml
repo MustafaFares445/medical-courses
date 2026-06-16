@@ -1,0 +1,208 @@
+openapi: 3.1.0
+info:
+  title: Medical Courses Dashboard API
+  version: 0.2.0
+servers:
+  - url: /api
+paths:
+  /admin/overview:
+    get:
+      summary: Get dashboard overview metrics
+      tags:
+        - Admin Overview
+      security:
+        - sanctumAuth: []
+      responses:
+        '200':
+          description: Dashboard metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Overview'
+        '401':
+          description: Guest is not authenticated
+        '403':
+          description: Authenticated user is not admin
+  /admin/categories:
+    get:
+      summary: List admin categories
+      tags:
+        - Admin Categories
+      security:
+        - sanctumAuth: []
+      parameters:
+        - in: query
+          name: perPage
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: filter[type]
+          schema:
+            type: string
+            enum: [course, book, article]
+        - in: query
+          name: filter[isActive]
+          schema:
+            type: boolean
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [name, -name, createdAt, -createdAt]
+      responses:
+        '200':
+          description: Paginated categories
+    post:
+      summary: Create category
+      tags:
+        - Admin Categories
+      security:
+        - sanctumAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryPayload'
+      responses:
+        '201':
+          description: Created category
+        '422':
+          description: Validation error
+  /admin/categories/{category}:
+    get:
+      summary: Show category
+      tags:
+        - Admin Categories
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CategoryId'
+      responses:
+        '200':
+          description: Category detail
+    patch:
+      summary: Update category
+      tags:
+        - Admin Categories
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CategoryId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryPayload'
+      responses:
+        '200':
+          description: Updated category
+        '422':
+          description: Validation error
+    delete:
+      summary: Delete category
+      tags:
+        - Admin Categories
+      security:
+        - sanctumAuth: []
+      parameters:
+        - $ref: '#/components/parameters/CategoryId'
+      responses:
+        '204':
+          description: Deleted category
+        '409':
+          description: Category is assigned to content
+components:
+  parameters:
+    CategoryId:
+      in: path
+      name: category
+      required: true
+      schema:
+        type: integer
+  schemas:
+    Overview:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        totalCourses:
+          type: integer
+        totalPublishedCourses:
+          type: integer
+        totalBooks:
+          type: integer
+        totalPublishedBooks:
+          type: integer
+        totalArticles:
+          type: integer
+        totalPublishedArticles:
+          type: integer
+        totalPaidOrders:
+          type: integer
+        totalRevenue:
+          type: string
+        recentOrders:
+          type: array
+          items:
+            type: object
+        recentPayments:
+          type: array
+          items:
+            type: object
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [course, book, article]
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: [string, 'null']
+        isActive:
+          type: boolean
+        coursesCount:
+          type: integer
+        booksCount:
+          type: integer
+        articlesCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CategoryPayload:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [course, book, article]
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: [string, 'null']
+        isActive:
+          type: boolean
+  securitySchemes:
+    sanctumAuth:
+      type: http
+      scheme: bearer
