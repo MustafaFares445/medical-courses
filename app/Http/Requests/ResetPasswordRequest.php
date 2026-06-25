@@ -24,7 +24,7 @@ final class ResetPasswordRequest extends FormRequest
         ];
     }
 
-    public function data(): ResetPasswordData
+    public function toData(): ResetPasswordData
     {
         $validated = $this->validated();
 
