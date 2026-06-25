@@ -29,8 +29,12 @@ final class ProfileRequest extends FormRequest
         ];
     }
 
-    public function toData(): ProfileData
+    public function data($key = null, $default = null): mixed
     {
+        if ($key !== null || func_num_args() > 0) {
+            return parent::data($key, $default);
+        }
+
         $validated = $this->validated();
 
         return new ProfileData(
