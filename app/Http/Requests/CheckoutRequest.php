@@ -26,8 +26,12 @@ final class CheckoutRequest extends FormRequest
         ];
     }
 
-    public function toData(): CheckoutData
+    public function data($key = null, $default = null): mixed
     {
+        if ($key !== null || func_num_args() > 0) {
+            return parent::data($key, $default);
+        }
+
         $payload = $this->validated();
 
         $items = collect($payload['items'])
