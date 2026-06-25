@@ -24,7 +24,7 @@ final class LoginRequest extends FormRequest
         ];
     }
 
-    public function data(): LoginData
+    public function toData(): LoginData
     {
         $validated = $this->validated();
 
