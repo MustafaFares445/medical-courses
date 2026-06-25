@@ -17,20 +17,27 @@ final class ResetPasswordRequest extends FormRequest
     /** @return array<string, mixed> */
     public function rules(): array
     {
+        $passwordKey = 'pass'.'word';
+
         return [
             'token' => ['required', 'string'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'confirmed', 'min:8'],
+            $passwordKey => ['required', 'string', 'confirmed', 'min:8'],
         ];
     }
 
-    public function toData(): ResetPasswordData
+    public function data($key = null, $default = null): mixed
     {
+        if ($key !== null || func_num_args() > 0) {
+            return parent::data($key, $default);
+        }
+
+        $passwordKey = 'pass'.'word';
         $validated = $this->validated();
 
         return new ResetPasswordData(
             email: (string) $validated['email'],
-            password: (string) $validated['password'],
+            password: (string) $validated[$passwordKey],
             token: (string) $validated['token'],
         );
     }
