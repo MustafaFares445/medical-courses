@@ -24,7 +24,7 @@ final class RegisterRequest extends FormRequest
         ];
     }
 
-    public function data(): RegisterData
+    public function toData(): RegisterData
     {
         $validated = $this->validated();
 
