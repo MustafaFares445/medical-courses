@@ -26,7 +26,7 @@ final class CheckoutRequest extends FormRequest
         ];
     }
 
-    public function data(): CheckoutData
+    public function toData(): CheckoutData
     {
         $payload = $this->validated();
 
