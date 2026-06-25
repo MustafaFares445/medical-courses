@@ -29,7 +29,7 @@ final class ProfileRequest extends FormRequest
         ];
     }
 
-    public function data(): ProfileData
+    public function toData(): ProfileData
     {
         $validated = $this->validated();
 
