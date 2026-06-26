@@ -25,10 +25,16 @@ final class CourseFactory extends Factory
 
         return [
             'category_id' => Category::factory()->course(),
-            'title' => $title,
+            'title' => ['en' => $title, 'ar' => 'كورس '.$title],
             'slug' => Str::slug($title),
-            'short_description' => fake()->sentence(12),
-            'description' => fake()->paragraphs(3, true),
+            'short_description' => [
+                'en' => fake()->sentence(12),
+                'ar' => fake()->sentence(12),
+            ],
+            'description' => [
+                'en' => fake()->paragraphs(3, true),
+                'ar' => fake()->paragraphs(3, true),
+            ],
             'price' => fake()->randomFloat(2, 10, 200),
             'currency' => 'USD',
             'status' => 'draft',
