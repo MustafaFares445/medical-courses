@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Support\Locale;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -11,17 +12,17 @@ final class BookListResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $image = $this->getFirstMediaUrl('cover') ?: null;
+        $locale = Locale::fromRequest($request);
 
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => $this->localized('title', $locale),
             'slug' => $this->slug,
-            'shortDescription' => $this->short_description,
+            'shortDescription' => $this->localized('short_description', $locale),
             'price' => $this->price,
             'currency' => $this->currency,
             'category' => CategoryResource::make($this->whenLoaded('category')),
-            'cover' => $image,
+            'cover' => $this->getFirstMediaUrl('cover') ?: null,
             'publishedAt' => $this->published_at?->toISOString(),
         ];
     }
