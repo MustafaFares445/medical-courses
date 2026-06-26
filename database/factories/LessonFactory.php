@@ -25,10 +25,16 @@ final class LessonFactory extends Factory
 
         return [
             'course_section_id' => CourseSection::factory(),
-            'title' => $title,
+            'title' => ['en' => $title, 'ar' => 'درس '.$title],
             'slug' => Str::slug($title),
-            'summary' => fake()->sentence(12),
-            'content' => fake()->paragraphs(2, true),
+            'summary' => [
+                'en' => fake()->sentence(12),
+                'ar' => fake()->sentence(12),
+            ],
+            'content' => [
+                'en' => fake()->paragraphs(2, true),
+                'ar' => fake()->paragraphs(2, true),
+            ],
             'video_url' => fake()->optional()->url(),
             'sort_order' => fake()->numberBetween(0, 100),
             'status' => 'draft',
