@@ -14,6 +14,7 @@ use App\Models\CourseSection;
 use App\Models\Lesson;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,7 @@ final class DemoContentSeeder extends Seeder
                 ],
             ]);
 
-            $this->course([
+            $ecgCourse = $this->course([
                 'category_id' => $cardiology->id,
                 'title' => ['en' => 'ECG Interpretation for Beginners', 'ar' => 'قراءة تخطيط القلب للمبتدئين'],
                 'slug' => 'ecg-interpretation-for-beginners',
@@ -73,6 +74,15 @@ final class DemoContentSeeder extends Seeder
                 'currency' => 'USD',
                 'status' => 'published',
                 'published_at' => now()->subDays(8),
+            ]);
+
+            $this->sectionWithLessons($ecgCourse, [
+                'title' => ['en' => 'Reading Method', 'ar' => 'طريقة القراءة'],
+                'description' => ['en' => 'A repeatable ECG checklist.', 'ar' => 'قائمة تحقق متكررة لتخطيط القلب.'],
+                'sort_order' => 1,
+                'lessons' => [
+                    ['slug' => 'rate-and-rhythm', 'title' => ['en' => 'Rate and Rhythm', 'ar' => 'السرعة والنظم'], 'summary' => ['en' => 'Estimate rate and classify rhythms.', 'ar' => 'تقدير السرعة وتصنيف النظم.'], 'content' => ['en' => 'Start with calibration, rate, rhythm regularity, P waves, PR interval, and QRS width.', 'ar' => 'ابدأ بالمعايرة والسرعة وانتظام النظم وموجات P وفاصل PR وعرض QRS.'], 'sort_order' => 1],
+                ],
             ]);
 
             $this->course([
@@ -85,6 +95,18 @@ final class DemoContentSeeder extends Seeder
                 'currency' => 'USD',
                 'status' => 'published',
                 'published_at' => now()->subDays(6),
+            ]);
+
+            $this->course([
+                'category_id' => $internal->id,
+                'title' => ['en' => 'Clinical Pharmacology Draft Course', 'ar' => 'مسودة كورس علم الأدوية السريري'],
+                'slug' => 'clinical-pharmacology-draft-course',
+                'short_description' => ['en' => 'Draft course hidden from public APIs.', 'ar' => 'كورس مسودة لا يظهر في واجهات الموقع العامة.'],
+                'description' => ['en' => 'Seeded draft content for dashboard and visibility testing.', 'ar' => 'محتوى تجريبي بحالة مسودة لاختبار الداشبورد والظهور.'],
+                'price' => '44.00',
+                'currency' => 'USD',
+                'status' => 'draft',
+                'published_at' => null,
             ]);
 
             $clinicalBook = $this->book([
@@ -113,6 +135,19 @@ final class DemoContentSeeder extends Seeder
                 'published_at' => now()->subDays(7),
             ]);
 
+            $this->book([
+                'category_id' => $clinicalGuides->id,
+                'title' => ['en' => 'Hidden Procedure Checklist Book', 'ar' => 'كتاب قوائم الإجراءات المخفي'],
+                'slug' => 'hidden-procedure-checklist-book',
+                'short_description' => ['en' => 'Hidden demo book for dashboard state testing.', 'ar' => 'كتاب مخفي تجريبي لاختبار حالات الداشبورد.'],
+                'description' => ['en' => 'This seeded record should not appear in public book catalogs.', 'ar' => 'هذا السجل التجريبي لا يجب أن يظهر في قوائم الكتب العامة.'],
+                'price' => '19.00',
+                'currency' => 'USD',
+                'external_file_url' => 'https://example.com/private/books/hidden-checklist.pdf',
+                'status' => 'hidden',
+                'published_at' => null,
+            ]);
+
             $this->article([
                 'category_id' => $studyTips->id,
                 'title' => ['en' => 'How to Study Medicine Without Burning Out', 'ar' => 'كيف تدرس الطب دون إرهاق'],
@@ -131,6 +166,16 @@ final class DemoContentSeeder extends Seeder
                 'body' => ['en' => 'Start with the main complaint, identify dangerous diagnoses first, group causes by system, and use history and examination to narrow the list.', 'ar' => 'ابدأ بالشكوى الرئيسية وحدد التشخيصات الخطيرة أولا ثم صنف الأسباب حسب الجهاز واستخدم القصة والفحص لتضييق القائمة.'],
                 'status' => 'published',
                 'published_at' => now()->subDays(4),
+            ]);
+
+            $this->article([
+                'category_id' => $studyTips->id,
+                'title' => ['en' => 'Draft Article for Admin Review', 'ar' => 'مقال مسودة لمراجعة المدير'],
+                'slug' => 'draft-article-for-admin-review',
+                'excerpt' => ['en' => 'Draft article excluded from public API.', 'ar' => 'مقال مسودة مستبعد من الواجهة العامة.'],
+                'body' => ['en' => 'This is seeded as draft content for dashboard testing.', 'ar' => 'هذا محتوى تجريبي بحالة مسودة لاختبار الداشبورد.'],
+                'status' => 'draft',
+                'published_at' => null,
             ]);
 
             $student = User::query()->updateOrCreate(
@@ -153,6 +198,11 @@ final class DemoContentSeeder extends Seeder
                 ['title_snapshot' => 'Clinical Handbook for Medical Students', 'price_snapshot' => '29.00', 'currency' => 'USD'],
             );
 
+            Payment::query()->updateOrCreate(
+                ['provider_event_id' => 'evt_demo_seed_0001'],
+                ['order_id' => $order->id, 'provider' => 'stripe', 'provider_payment_id' => 'pi_demo_seed_0001', 'provider_session_id' => 'cs_test_demo_seed_0001', 'status' => 'paid', 'amount' => '78.00', 'currency' => 'USD', 'raw_payload' => ['seeded' => true, 'type' => 'checkout.session.completed'], 'processed_at' => now()->subDays(1)],
+            );
+
             CourseAccess::query()->updateOrCreate(
                 ['user_id' => $student->id, 'course_id' => $emergencyCourse->id],
                 ['order_item_id' => $courseItem->id, 'purchased_at' => now()->subDays(1)],
@@ -161,6 +211,11 @@ final class DemoContentSeeder extends Seeder
             BookAccess::query()->updateOrCreate(
                 ['user_id' => $student->id, 'book_id' => $clinicalBook->id],
                 ['order_item_id' => $bookItem->id, 'purchased_at' => now()->subDays(1)],
+            );
+
+            Order::query()->updateOrCreate(
+                ['order_number' => 'DEMO-PENDING-0002'],
+                ['user_id' => $student->id, 'status' => 'pending', 'subtotal' => '39.00', 'total' => '39.00', 'currency' => 'USD', 'checkout_session_id' => 'cs_test_demo_seed_0002', 'paid_at' => null],
             );
         });
     }
@@ -185,14 +240,7 @@ final class DemoContentSeeder extends Seeder
         foreach ($data['lessons'] as $lesson) {
             Lesson::query()->updateOrCreate(
                 ['course_section_id' => $section->id, 'slug' => $lesson['slug']],
-                [
-                    'title' => $lesson['title'],
-                    'summary' => $lesson['summary'],
-                    'content' => $lesson['content'],
-                    'video_url' => 'https://video.example.com/demo/'.$lesson['slug'],
-                    'sort_order' => $lesson['sort_order'],
-                    'status' => 'published',
-                ],
+                ['title' => $lesson['title'], 'summary' => $lesson['summary'], 'content' => $lesson['content'], 'video_url' => 'https://video.example.com/demo/'.$lesson['slug'], 'sort_order' => $lesson['sort_order'], 'status' => 'published'],
             );
         }
     }
