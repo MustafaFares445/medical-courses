@@ -13,9 +13,9 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table): void {
             $table->id();
             $table->enum('type', ['course', 'book', 'article']);
-            $table->string('name');
+            $table->json('name');
             $table->string('slug');
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
