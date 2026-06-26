@@ -20,10 +20,15 @@ final class CourseSectionFactory extends Factory
      */
     public function definition(): array
     {
+        $title = fake()->sentence(3);
+
         return [
             'course_id' => Course::factory(),
-            'title' => fake()->sentence(3),
-            'description' => fake()->optional()->sentence(10),
+            'title' => ['en' => $title, 'ar' => 'قسم '.$title],
+            'description' => [
+                'en' => fake()->optional()->sentence(10),
+                'ar' => fake()->optional()->sentence(10),
+            ],
             'sort_order' => fake()->numberBetween(0, 100),
         ];
     }
