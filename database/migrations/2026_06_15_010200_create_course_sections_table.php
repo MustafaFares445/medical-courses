@@ -13,8 +13,8 @@ return new class extends Migration
         Schema::create('course_sections', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
-            $table->string('title');
-            $table->text('description')->nullable();
+            $table->json('title');
+            $table->json('description')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
 
