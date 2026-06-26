@@ -21,12 +21,16 @@ final class CategoryFactory extends Factory
     public function definition(): array
     {
         $name = fake()->unique()->words(2, true);
+        $title = Str::title($name);
 
         return [
             'type' => 'course',
-            'name' => Str::title($name),
+            'name' => ['en' => $title, 'ar' => 'تصنيف '.$title],
             'slug' => Str::slug($name),
-            'description' => fake()->optional()->sentence(),
+            'description' => [
+                'en' => fake()->optional()->sentence(),
+                'ar' => fake()->optional()->sentence(),
+            ],
             'is_active' => true,
         ];
     }
