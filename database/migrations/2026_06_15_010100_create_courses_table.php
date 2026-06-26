@@ -13,10 +13,10 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->string('title');
+            $table->json('title');
             $table->string('slug')->unique();
-            $table->text('short_description')->nullable();
-            $table->longText('description')->nullable();
+            $table->json('short_description')->nullable();
+            $table->json('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
             $table->char('currency', 3)->default('USD');
             $table->enum('status', ['draft', 'published', 'hidden'])->default('draft');
