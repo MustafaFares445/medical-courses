@@ -13,10 +13,10 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->string('title');
+            $table->json('title');
             $table->string('slug')->unique();
-            $table->text('excerpt')->nullable();
-            $table->longText('body')->nullable();
+            $table->json('excerpt')->nullable();
+            $table->json('body')->nullable();
             $table->enum('status', ['draft', 'published', 'hidden'])->default('draft');
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
