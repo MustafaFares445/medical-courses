@@ -5,33 +5,32 @@ declare(strict_types=1);
 namespace App\Data\Admin;
 
 use App\Models\Course;
+use App\Support\Locale;
 use Illuminate\Support\Str;
 use Spatie\LaravelData\Data;
 
 final class CourseData extends Data
 {
-    /** @param list<string> $fields */
     public function __construct(
         public readonly ?int $categoryId = null,
-        public readonly ?string $title = null,
+        public readonly ?array $title = null,
         public readonly ?string $slug = null,
-        public readonly ?string $shortDescription = null,
-        public readonly ?string $description = null,
+        public readonly ?array $shortDescription = null,
+        public readonly ?array $description = null,
         public readonly ?string $price = null,
         public readonly ?string $currency = null,
         public readonly ?string $status = null,
         public readonly array $fields = [],
     ) {}
 
-    /** @param array<string, mixed> $validated */
     public static function fromValidated(array $validated): self
     {
         return new self(
             categoryId: array_key_exists('categoryId', $validated) && $validated['categoryId'] !== null ? (int) $validated['categoryId'] : null,
-            title: is_string($validated['title'] ?? null) ? $validated['title'] : null,
+            title: is_array($validated['title'] ?? null) ? $validated['title'] : null,
             slug: is_string($validated['slug'] ?? null) ? $validated['slug'] : null,
-            shortDescription: array_key_exists('shortDescription', $validated) ? (is_string($validated['shortDescription']) ? $validated['shortDescription'] : null) : null,
-            description: array_key_exists('description', $validated) ? (is_string($validated['description']) ? $validated['description'] : null) : null,
+            shortDescription: array_key_exists('shortDescription', $validated) && is_array($validated['shortDescription']) ? $validated['shortDescription'] : null,
+            description: array_key_exists('description', $validated) && is_array($validated['description']) ? $validated['description'] : null,
             price: array_key_exists('price', $validated) ? (string) $validated['price'] : null,
             currency: is_string($validated['currency'] ?? null) ? strtoupper($validated['currency']) : null,
             status: is_string($validated['status'] ?? null) ? $validated['status'] : null,
@@ -39,45 +38,18 @@ final class CourseData extends Data
         );
     }
 
-    /** @return array<string, mixed> */
     public function toModelAttributes(?Course $course = null): array
     {
         $attributes = [];
-
-        if ($this->hasField('categoryId')) {
-            $attributes['category_id'] = $this->categoryId;
-        }
-
-        if ($this->hasField('title')) {
-            $attributes['title'] = $this->title;
-        }
-
-        if ($this->hasField('slug')) {
-            $attributes['slug'] = $this->slug !== null && $this->slug !== '' ? Str::slug($this->slug) : Str::slug((string) $this->title);
-        } elseif (! $course instanceof Course && $this->title !== null) {
-            $attributes['slug'] = Str::slug($this->title);
-        }
-
-        if ($this->hasField('shortDescription')) {
-            $attributes['short_description'] = $this->shortDescription;
-        }
-
-        if ($this->hasField('description')) {
-            $attributes['description'] = $this->description;
-        }
-
-        if ($this->hasField('price')) {
-            $attributes['price'] = $this->price;
-        }
-
-        if ($this->hasField('currency')) {
-            $attributes['currency'] = $this->currency;
-        }
-
-        if ($this->hasField('status')) {
-            $attributes['status'] = $this->status;
-        }
-
+        if ($this->hasField('categoryId')) { $attributes['category_id'] = $this->categoryId; }
+        if ($this->hasField('title')) { $attributes['title'] = $this->title; }
+        if ($this->hasField('slug')) { $attributes['slug'] = $this->slug !== null && $this->slug !== '' ? Str::slug($this->slug) : Str::slug(Locale::slugSource($this->title)); }
+        elseif (! $course instanceof Course && $this->title !== null) { $attributes['slug'] = Str::slug(Locale::slugSource($this->title)); }
+        if ($this->hasField('shortDescription')) { $attributes['short_description'] = $this->shortDescription; }
+        if ($this->hasField('description')) { $attributes['description'] = $this->description; }
+        if ($this->hasField('price')) { $attributes['price'] = $this->price; }
+        if ($this->hasField('currency')) { $attributes['currency'] = $this->currency; }
+        if ($this->hasField('status')) { $attributes['status'] = $this->status; }
         return $attributes;
     }
 
