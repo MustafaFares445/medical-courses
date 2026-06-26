@@ -25,10 +25,16 @@ final class ArticleFactory extends Factory
 
         return [
             'category_id' => Category::factory()->article(),
-            'title' => $title,
+            'title' => ['en' => $title, 'ar' => 'مقال '.$title],
             'slug' => Str::slug($title),
-            'excerpt' => fake()->sentence(16),
-            'body' => fake()->paragraphs(5, true),
+            'excerpt' => [
+                'en' => fake()->sentence(16),
+                'ar' => fake()->sentence(16),
+            ],
+            'body' => [
+                'en' => fake()->paragraphs(5, true),
+                'ar' => fake()->paragraphs(5, true),
+            ],
             'status' => 'draft',
             'published_at' => null,
         ];
