@@ -13,10 +13,10 @@ return new class extends Migration
         Schema::create('lessons', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('course_section_id')->constrained('course_sections')->cascadeOnDelete();
-            $table->string('title');
+            $table->json('title');
             $table->string('slug')->nullable();
-            $table->text('summary')->nullable();
-            $table->longText('content')->nullable();
+            $table->json('summary')->nullable();
+            $table->json('content')->nullable();
             $table->text('video_url')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
             $table->enum('status', ['draft', 'published', 'hidden'])->default('draft');
