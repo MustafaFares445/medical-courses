@@ -7,21 +7,17 @@ namespace App\Http\Resources\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin \App\Models\Article
- */
 final class ArticleAdminResource extends JsonResource
 {
-    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'categoryId' => $this->category_id,
-            'title' => $this->title,
+            'title' => $this->translations('title'),
             'slug' => $this->slug,
-            'excerpt' => $this->excerpt,
-            'body' => $this->body,
+            'excerpt' => $this->translations('excerpt'),
+            'body' => $this->translations('body'),
             'status' => $this->status,
             'publishedAt' => $this->published_at?->toISOString(),
             'articleImage' => $this->getFirstMediaUrl('article-image') ?: null,
