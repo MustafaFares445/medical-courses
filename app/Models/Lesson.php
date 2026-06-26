@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasCatalogScopes;
+use App\Models\Concerns\HasTranslatableContent;
 use Database\Factories\LessonFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,35 +15,18 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 final class Lesson extends Model implements HasMedia
 {
-    /** @use HasFactory<LessonFactory> */
-    use HasCatalogScopes, HasFactory, InteractsWithMedia;
+    use HasCatalogScopes, HasFactory, HasTranslatableContent, InteractsWithMedia;
 
-    /** @var list<string> */
     protected array $searchable = ['title', 'slug', 'summary', 'content'];
+    protected array $translatable = ['title', 'summary', 'content'];
 
-    /** @var list<string> */
-    protected $fillable = [
-        'course_section_id',
-        'title',
-        'slug',
-        'summary',
-        'content',
-        'video_url',
-        'sort_order',
-        'status',
-    ];
+    protected $fillable = ['course_section_id', 'title', 'slug', 'summary', 'content', 'video_url', 'sort_order', 'status'];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
-        return [
-            'sort_order' => 'integer',
-        ];
+        return ['title' => 'array', 'summary' => 'array', 'content' => 'array', 'sort_order' => 'integer'];
     }
 
-    /** @return BelongsTo<CourseSection, $this> */
     public function section(): BelongsTo
     {
         return $this->belongsTo(CourseSection::class, 'course_section_id');
@@ -50,8 +34,6 @@ final class Lesson extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('lesson-video')
-            ->singleFile()
-            ->useDisk((string) env('MEDIA_DISK_PRIVATE', 'media_private'));
+        $this->addMediaCollection('lesson-video')->singleFile()->useDisk((string) env('MEDIA_DISK_PRIVATE', 'media_private'));
     }
 }
