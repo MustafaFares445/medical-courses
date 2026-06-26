@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Models\Concerns\HasCatalogScopes;
+use App\Models\Concerns\HasTranslatableContent;
 use Database\Factories\BookFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,13 +18,12 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 final class Book extends Model implements HasMedia
 {
-    /** @use HasFactory<BookFactory> */
-    use HasCatalogScopes, HasFactory, InteractsWithMedia, SoftDeletes;
+    use HasCatalogScopes, HasFactory, HasTranslatableContent, InteractsWithMedia, SoftDeletes;
 
-    /** @var list<string> */
     protected array $searchable = ['title', 'slug', 'short_description', 'description'];
 
-    /** @var list<string> */
+    protected array $translatable = ['title', 'short_description', 'description'];
+
     protected $fillable = [
         'category_id',
         'title',
@@ -37,24 +37,22 @@ final class Book extends Model implements HasMedia
         'published_at',
     ];
 
-    /**
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
+            'title' => 'array',
+            'short_description' => 'array',
+            'description' => 'array',
             'price' => 'decimal:2',
             'published_at' => 'datetime',
         ];
     }
 
-    /** @return BelongsTo<Category, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /** @return HasMany<BookAccess, $this> */
     public function accesses(): HasMany
     {
         return $this->hasMany(BookAccess::class);
