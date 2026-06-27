@@ -13,6 +13,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\User;
+use App\Support\Locale;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -102,7 +104,7 @@ final class CheckoutService
                 $items[$key] = [
                     'type' => 'course',
                     'id' => $course->id,
-                    'title' => $course->title,
+                    'title' => $this->itemTitle($course, 'Course #'.$course->id),
                     'price' => (float) $course->price,
                     'currency' => $course->currency,
                 ];
@@ -122,7 +124,7 @@ final class CheckoutService
                 $items[$key] = [
                     'type' => 'book',
                     'id' => $book->id,
-                    'title' => $book->title,
+                    'title' => $this->itemTitle($book, 'Book #'.$book->id),
                     'price' => (float) $book->price,
                     'currency' => $book->currency,
                 ];
@@ -130,6 +132,15 @@ final class CheckoutService
         }
 
         return array_values($items);
+    }
+
+    private function itemTitle(Model $item, string $fallback): string
+    {
+        $title = $item->getAttribute('title');
+
+        return Locale::translate($title, Locale::FALLBACK)
+            ?? Locale::translate($title, 'ar')
+            ?? $fallback;
     }
 
     private function currency(array $items): string
