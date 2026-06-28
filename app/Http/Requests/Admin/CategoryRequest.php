@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Admin;
 
 use App\Models\Category;
+use App\Support\Locale;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -20,9 +21,10 @@ final class CategoryRequest extends FormRequest
     {
         $name = $this->input('name');
         $slug = $this->input('slug');
+        $source = Locale::slugSource($name);
 
-        if (is_string($name) && $name !== '' && (! is_string($slug) || $slug === '')) {
-            $this->merge(['slug' => Str::slug($name)]);
+        if ($source !== '' && (! is_string($slug) || $slug === '')) {
+            $this->merge(['slug' => Str::slug($source)]);
         }
     }
 
@@ -36,7 +38,9 @@ final class CategoryRequest extends FormRequest
 
         return [
             'type' => [$required, 'string', 'in:course,book,article'],
-            'name' => [$required, 'string', 'max:255'],
+            'name' => [$required, 'array'],
+            'name.en' => [$required, 'string', 'max:255'],
+            'name.ar' => ['sometimes', 'nullable', 'string', 'max:255'],
             'slug' => [
                 'sometimes',
                 'nullable',
@@ -46,7 +50,9 @@ final class CategoryRequest extends FormRequest
                     ->where(fn ($query) => $query->where('type', $type))
                     ->ignore($category?->id),
             ],
-            'description' => ['sometimes', 'nullable', 'string'],
+            'description' => ['sometimes', 'nullable', 'array'],
+            'description.en' => ['sometimes', 'nullable', 'string'],
+            'description.ar' => ['sometimes', 'nullable', 'string'],
             'isActive' => ['sometimes', 'boolean'],
         ];
     }
