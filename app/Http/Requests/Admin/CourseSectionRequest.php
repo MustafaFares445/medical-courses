@@ -19,8 +19,12 @@ final class CourseSectionRequest extends FormRequest
         $required = $this->isMethod('post') ? 'required' : 'sometimes';
 
         return [
-            'title' => [$required, 'string', 'max:255'],
-            'description' => ['sometimes', 'nullable', 'string'],
+            'title' => [$required, 'array'],
+            'title.en' => [$required, 'string', 'max:255'],
+            'title.ar' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'array'],
+            'description.en' => ['sometimes', 'nullable', 'string'],
+            'description.ar' => ['sometimes', 'nullable', 'string'],
             'sortOrder' => ['sometimes', 'integer', 'min:0'],
         ];
     }
