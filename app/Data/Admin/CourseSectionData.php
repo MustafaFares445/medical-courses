@@ -8,10 +8,14 @@ use Spatie\LaravelData\Data;
 
 final class CourseSectionData extends Data
 {
-    /** @param list<string> $fields */
+    /**
+     * @param array{en?: string|null, ar?: string|null}|null $title
+     * @param array{en?: string|null, ar?: string|null}|null $description
+     * @param list<string> $fields
+     */
     public function __construct(
-        public readonly ?string $title = null,
-        public readonly ?string $description = null,
+        public readonly ?array $title = null,
+        public readonly ?array $description = null,
         public readonly ?int $sortOrder = null,
         public readonly array $fields = [],
     ) {}
@@ -20,8 +24,8 @@ final class CourseSectionData extends Data
     public static function fromValidated(array $validated): self
     {
         return new self(
-            title: is_string($validated['title'] ?? null) ? $validated['title'] : null,
-            description: array_key_exists('description', $validated) ? (is_string($validated['description']) ? $validated['description'] : null) : null,
+            title: is_array($validated['title'] ?? null) ? $validated['title'] : null,
+            description: array_key_exists('description', $validated) && is_array($validated['description']) ? $validated['description'] : null,
             sortOrder: array_key_exists('sortOrder', $validated) ? (int) $validated['sortOrder'] : null,
             fields: array_keys($validated),
         );
