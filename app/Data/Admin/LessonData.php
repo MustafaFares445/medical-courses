@@ -5,17 +5,23 @@ declare(strict_types=1);
 namespace App\Data\Admin;
 
 use App\Models\Lesson;
+use App\Support\Locale;
 use Illuminate\Support\Str;
 use Spatie\LaravelData\Data;
 
 final class LessonData extends Data
 {
-    /** @param list<string> $fields */
+    /**
+     * @param array{en?: string|null, ar?: string|null}|null $title
+     * @param array{en?: string|null, ar?: string|null}|null $summary
+     * @param array{en?: string|null, ar?: string|null}|null $content
+     * @param list<string> $fields
+     */
     public function __construct(
-        public readonly ?string $title = null,
+        public readonly ?array $title = null,
         public readonly ?string $slug = null,
-        public readonly ?string $summary = null,
-        public readonly ?string $content = null,
+        public readonly ?array $summary = null,
+        public readonly ?array $content = null,
         public readonly ?string $videoUrl = null,
         public readonly ?int $sortOrder = null,
         public readonly ?string $status = null,
@@ -26,10 +32,10 @@ final class LessonData extends Data
     public static function fromValidated(array $validated): self
     {
         return new self(
-            title: is_string($validated['title'] ?? null) ? $validated['title'] : null,
+            title: is_array($validated['title'] ?? null) ? $validated['title'] : null,
             slug: is_string($validated['slug'] ?? null) ? $validated['slug'] : null,
-            summary: array_key_exists('summary', $validated) ? (is_string($validated['summary']) ? $validated['summary'] : null) : null,
-            content: array_key_exists('content', $validated) ? (is_string($validated['content']) ? $validated['content'] : null) : null,
+            summary: array_key_exists('summary', $validated) && is_array($validated['summary']) ? $validated['summary'] : null,
+            content: array_key_exists('content', $validated) && is_array($validated['content']) ? $validated['content'] : null,
             videoUrl: array_key_exists('videoUrl', $validated) ? (is_string($validated['videoUrl']) ? $validated['videoUrl'] : null) : null,
             sortOrder: array_key_exists('sortOrder', $validated) ? (int) $validated['sortOrder'] : null,
             status: is_string($validated['status'] ?? null) ? $validated['status'] : null,
@@ -47,9 +53,9 @@ final class LessonData extends Data
         }
 
         if ($this->hasField('slug')) {
-            $attributes['slug'] = $this->slug !== null && $this->slug !== '' ? Str::slug($this->slug) : Str::slug((string) $this->title);
+            $attributes['slug'] = $this->slug !== null && $this->slug !== '' ? Str::slug($this->slug) : Str::slug(Locale::slugSource($this->title));
         } elseif (! $lesson instanceof Lesson && $this->title !== null) {
-            $attributes['slug'] = Str::slug($this->title);
+            $attributes['slug'] = Str::slug(Locale::slugSource($this->title));
         }
 
         if ($this->hasField('summary')) {
