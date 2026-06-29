@@ -13,6 +13,7 @@ final class ProtectedLessonResource extends JsonResource
     public function toArray(Request $request): array
     {
         $locale = Locale::fromRequest($request);
+        $mediaUrl = $this->getFirstMediaUrl('lesson-video') ?: null;
 
         return [
             'id' => $this->id,
@@ -21,7 +22,7 @@ final class ProtectedLessonResource extends JsonResource
             'summary' => $this->localized('summary', $locale),
             'content' => $this->localized('content', $locale),
             'videoUrl' => $this->video_url,
-            'videoMediaUrl' => null,
+            'videoMediaUrl' => $mediaUrl,
             'courseId' => $this->section?->course_id,
             'sectionId' => $this->course_section_id,
             'sortOrder' => $this->sort_order,
