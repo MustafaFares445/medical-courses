@@ -16,6 +16,7 @@ use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\LibraryController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\ProtectedLessonController;
+use App\Http\Controllers\API\PurchasedCourseController;
 use App\Http\Controllers\API\StripeWebhookController;
 use App\Support\ApiResponse;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,7 @@ Route::middleware(['auth:sanctum'])->group(function (): void {
         Route::get('/library', LibraryController::class);
         Route::get('/orders', [OrderController::class, 'index']);
         Route::get('/orders/{order:order_number}', [OrderController::class, 'show']);
+        Route::get('/courses/{course}', [PurchasedCourseController::class, 'show']);
         Route::get('/courses/{course}/lessons/{lesson}', [ProtectedLessonController::class, 'show']);
         Route::get('/books/{book}/access', [BookAccessController::class, 'show']);
     });
