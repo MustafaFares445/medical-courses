@@ -31,7 +31,7 @@ final class AdminUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($admin?->id),
             ],
-            'password' => [
+            'accessCode' => [
                 $this->isMethod('post') ? 'required' : 'sometimes',
                 'nullable',
                 'string',
