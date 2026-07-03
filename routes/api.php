@@ -2,83 +2,65 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\API\AccountRecoveryController;
-use App\Http\Controllers\API\Admin;
-use App\Http\Controllers\API\ArticleController;
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\BookAccessController;
-use App\Http\Controllers\API\BookController;
-use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\CheckoutController;
-use App\Http\Controllers\API\CourseController;
-use App\Http\Controllers\API\CurrentUserController;
-use App\Http\Controllers\API\HomeController;
-use App\Http\Controllers\API\LibraryController;
-use App\Http\Controllers\API\OrderController;
-use App\Http\Controllers\API\ProtectedLessonController;
-use App\Http\Controllers\API\PurchasedCourseController;
-use App\Http\Controllers\API\StripeWebhookController;
+use App\Http\Controllers\API;
 use App\Support\ApiResponse;
 use Illuminate\Support\Facades\Route;
 
 Route::options('/{any}', fn () => response()->noContent())->where('any', '.*');
 
-Route::get('/health', fn () => ApiResponse::success(['status' => 'ok', 'service' => 'medical-courses-api']));
+Route::get('/health', fn () => ApiResponse::success(['status' => 'ok']));
 
-Route::get('/home', HomeController::class);
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/courses', [CourseController::class, 'index']);
-Route::get('/courses/{course:slug}', [CourseController::class, 'show']);
-Route::get('/books', [BookController::class, 'index']);
-Route::get('/books/{book:slug}', [BookController::class, 'show']);
-Route::get('/articles', [ArticleController::class, 'index']);
-Route::get('/articles/{article:slug}', [ArticleController::class, 'show']);
-Route::post('/stripe/webhook', StripeWebhookController::class);
+Route::post('/stripe/webhook', API\StripeWebhookController::class);
 
-Route::prefix('auth')->group(function (): void {
-    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
-    Route::post('/forgot-password', [AccountRecoveryController::class, 'forgot'])->middleware('throttle:5,1');
-    Route::post('/reset-password', [AccountRecoveryController::class, 'reset'])->middleware('throttle:5,1');
-    Route::middleware(['auth:sanctum'])->group(function (): void {
-        Route::post('/logout', [AuthController::class, 'logout']);
-    });
+Route::middleware('guest')->group(function (): void {
+    Route::post('/auth/register', [API\AuthController::class, 'register']);
+    Route::post('/auth/login', [API\AuthController::class, 'login']);
 });
 
-Route::middleware(['auth:sanctum'])->group(function (): void {
-    Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1');
-    Route::get('/me', [CurrentUserController::class, 'show']);
-    Route::patch('/me', [CurrentUserController::class, 'update']);
+Route::get('/categories', API\CategoryController::class);
+Route::get('/courses', [API\CourseController::class, 'index']);
+Route::get('/courses/{course:slug}', [API\CourseController::class, 'show']);
+Route::get('/books', [API\TextbookController::class, 'index']);
+Route::get('/books/{book:slug}', [API\TextbookController::class, 'show']);
+Route::get('/articles', [API\ArticleController::class, 'index']);
+Route::get('/articles/{article:slug}', [API\ArticleController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function (): void {
+    Route::post('/auth/logout', [API\AuthController::class, 'logout']);
+    Route::get('/me', [API\MeController::class, 'show']);
+    Route::post('/checkout', [API\CheckoutController::class, 'store']);
+    Route::get('/my/library', API\LibraryController::class);
+
     Route::prefix('my')->group(function (): void {
-        Route::get('/health', fn () => ApiResponse::success(['status' => 'authenticated']));
-        Route::get('/library', LibraryController::class);
-        Route::get('/orders', [OrderController::class, 'index']);
-        Route::get('/orders/{order:order_number}', [OrderController::class, 'show']);
-        Route::get('/courses/{course}', [PurchasedCourseController::class, 'show']);
-        Route::get('/courses/{course}/lessons/{lesson}', [ProtectedLessonController::class, 'show']);
-        Route::get('/books/{book}/access', [BookAccessController::class, 'show']);
+        Route::get('/courses/{course}', [API\PurchasedCourseController::class, 'show']);
+        Route::get('/courses/{course}/lessons/{lesson}', [API\PurchasedCourseController::class, 'lesson']);
+        Route::get('/lessons/{lesson}/video', [API\LessonVideoController::class, 'show'])
+            ->name('lessons.video.show')
+            ->middleware('signed');
+        Route::get('/books/{book}/access', API\BookAccessController::class);
     });
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function (): void {
     Route::get('/health', fn () => ApiResponse::success(['status' => 'admin']));
-    Route::get('/overview', Admin\OverviewController::class);
+    Route::get('/overview', API\Admin\OverviewController::class);
 
-    Route::apiResource('categories', Admin\CategoryController::class);
-    Route::apiResource('courses', Admin\CourseController::class);
-    Route::apiResource('books', Admin\TextbookController::class);
-    Route::apiResource('articles', Admin\EditorialController::class);
-    Route::apiResource('users', Admin\UserController::class)->only(['index', 'show']);
-    Route::apiResource('orders', Admin\OrderController::class)->only(['index', 'show']);
-    Route::apiResource('payments', Admin\PaymentController::class)->only(['index', 'show']);
+    Route::apiResource('categories', API\Admin\CategoryController::class);
+    Route::apiResource('courses', API\Admin\CourseController::class);
+    Route::apiResource('books', API\Admin\TextbookController::class);
+    Route::apiResource('articles', API\Admin\EditorialController::class);
+    Route::apiResource('admins', API\Admin\AdminUserController::class);
+    Route::apiResource('users', API\Admin\UserController::class)->only(['index', 'show']);
+    Route::apiResource('orders', API\Admin\OrderController::class)->only(['index', 'show']);
+    Route::apiResource('payments', API\Admin\PaymentController::class)->only(['index', 'show']);
 
-    Route::get('/courses/{course}/sections', [Admin\CourseSectionController::class, 'index']);
-    Route::post('/courses/{course}/sections', [Admin\CourseSectionController::class, 'store']);
-    Route::patch('/course-sections/{section}', [Admin\CourseSectionController::class, 'update']);
-    Route::delete('/course-sections/{section}', [Admin\CourseSectionController::class, 'destroy']);
+    Route::get('/courses/{course}/sections', [API\Admin\CourseSectionController::class, 'index']);
+    Route::post('/courses/{course}/sections', [API\Admin\CourseSectionController::class, 'store']);
+    Route::patch('/course-sections/{section}', [API\Admin\CourseSectionController::class, 'update']);
+    Route::delete('/course-sections/{section}', [API\Admin\CourseSectionController::class, 'destroy']);
 
-    Route::get('/course-sections/{section}/lessons', [Admin\LessonController::class, 'index']);
-    Route::post('/course-sections/{section}/lessons', [Admin\LessonController::class, 'store']);
-    Route::patch('/lessons/{lesson}', [Admin\LessonController::class, 'update']);
-    Route::delete('/lessons/{lesson}', [Admin\LessonController::class, 'destroy']);
+    Route::get('/course-sections/{section}/lessons', [API\Admin\LessonController::class, 'index']);
+    Route::post('/course-sections/{section}/lessons', [API\Admin\LessonController::class, 'store']);
+    Route::patch('/lessons/{lesson}', [API\Admin\LessonController::class, 'update']);
+    Route::delete('/lessons/{lesson}', [API\Admin\LessonController::class, 'destroy']);
 });
