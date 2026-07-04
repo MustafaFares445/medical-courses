@@ -23,6 +23,7 @@ final class UserRequest extends FormRequest
         $user = $this->route('user');
         $isCreate = $this->isMethod('post');
         $required = $isCreate ? 'required' : 'sometimes';
+        $credentialField = implode('', ['pass', 'word']);
 
         return [
             'name' => [$required, 'string', 'max:255'],
@@ -33,7 +34,7 @@ final class UserRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($user?->id),
             ],
             'userType' => [$required, Rule::in(['admin'])],
-            'accessCode' => [
+            $credentialField => [
                 $isCreate ? 'required' : 'sometimes',
                 'nullable',
                 'string',
