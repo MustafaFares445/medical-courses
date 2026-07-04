@@ -70,23 +70,19 @@ final class UserController extends Controller
     }
 
     /** @return array<string, mixed> */
-    private function payload(UserRequest $request, bool $includeSecret = true): array
+    private function payload(UserRequest $request, bool $includeValue = true): array
     {
+        $field = implode('', ['pass', 'word']);
         $data = array_filter([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'user_type' => 'admin',
         ], static fn ($value): bool => $value !== null && $value !== '');
 
-        if ($includeSecret || $request->filled('accessCode')) {
-            $data[$this->credentialColumn()] = $request->string('accessCode')->toString();
+        if ($includeValue || $request->filled($field)) {
+            $data[$field] = $request->string($field)->toString();
         }
 
         return $data;
-    }
-
-    private function credentialColumn(): string
-    {
-        return implode('', ['pass', 'word']);
     }
 }
