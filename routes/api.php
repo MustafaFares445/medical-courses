@@ -17,7 +17,7 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/auth/login', [API\AuthController::class, 'login']);
 });
 
-Route::get('/categories', API\CategoryController::class);
+Route::get('/categories', [API\CategoryController::class, 'index']);
 Route::get('/courses', [API\CourseController::class, 'index']);
 Route::get('/courses/{course:slug}', [API\CourseController::class, 'show']);
 Route::get('/books', [API\TextbookController::class, 'index']);
@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('/lessons/{lesson}/video', [API\LessonVideoController::class, 'show'])
             ->name('lessons.video.show')
             ->middleware('signed');
-        Route::get('/books/{book}/access', API\BookAccessController::class);
+        Route::get('/books/{book}/access', [API\BookAccessController::class, 'show']);
     });
 });
 
