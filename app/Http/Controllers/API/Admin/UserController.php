@@ -6,7 +6,6 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserFilterRequest;
-use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\Admin\UserAdminResource;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -42,20 +41,6 @@ final class UserController extends Controller
             $query->orderBy($request->sortColumnName(), $request->sortDirectionName())
                 ->paginate($request->perPage())
         );
-    }
-
-    public function store(UserRequest $request): UserAdminResource
-    {
-        $field = implode('', ['pass', 'word']);
-
-        $user = User::query()->create([
-            'name' => $request->string('name')->toString(),
-            'email' => $request->string('email')->toString(),
-            $field => $request->string($field)->toString(),
-            'user_type' => 'admin',
-        ]);
-
-        return UserAdminResource::make($user->loadCount(['orders', 'courseAccesses', 'bookAccesses']));
     }
 
     public function show(User $user): UserAdminResource
