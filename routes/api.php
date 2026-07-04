@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::apiResource('courses', API\Admin\CourseController::class);
     Route::apiResource('books', API\Admin\TextbookController::class);
     Route::apiResource('articles', API\Admin\EditorialController::class);
+    Route::post('/users', [API\Admin\UserController::class, 'store']);
     Route::apiResource('users', API\Admin\UserController::class)->only(['index', 'show']);
     Route::apiResource('orders', API\Admin\OrderController::class)->only(['index', 'show']);
     Route::apiResource('payments', API\Admin\PaymentController::class)->only(['index', 'show']);
