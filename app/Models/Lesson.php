@@ -34,6 +34,8 @@ final class Lesson extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('lesson-video')->singleFile()->useDisk((string) env('MEDIA_DISK_PRIVATE', 'media_private'));
+        $disk = 'local';
+
+        $this->addMediaCollection('lesson-video')->singleFile()->useDisk($disk);
     }
 }
