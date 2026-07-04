@@ -23,7 +23,7 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->user_type === 'admin';
+        return $this->user_type === 'super_admin';
     }
 
     /** @return HasMany<Order, $this> */
