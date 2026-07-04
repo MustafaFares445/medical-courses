@@ -17,7 +17,7 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/auth/login', [API\AuthController::class, 'login']);
 });
 
-Route::get('/categories', [API\CategoryController::class, 'index']);
+Route::get('/categories', API\CategoryController::class);
 Route::get('/courses', [API\CourseController::class, 'index']);
 Route::get('/courses/{course:slug}', [API\CourseController::class, 'show']);
 Route::get('/books', [API\TextbookController::class, 'index']);
@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function (): void {
         Route::get('/lessons/{lesson}/video', [API\LessonVideoController::class, 'show'])
             ->name('lessons.video.show')
             ->middleware('signed');
-        Route::get('/books/{book}/access', [API\BookAccessController::class, 'show']);
+        Route::get('/books/{book}/access', API\BookAccessController::class);
     });
 });
 
@@ -49,11 +49,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::apiResource('courses', API\Admin\CourseController::class);
     Route::apiResource('books', API\Admin\TextbookController::class);
     Route::apiResource('articles', API\Admin\EditorialController::class);
-    Route::get('/users', [API\Admin\UserController::class, 'index']);
-    Route::post('/users', [API\Admin\UserController::class, 'store']);
-    Route::get('/users/{user}', [API\Admin\UserController::class, 'show']);
-    Route::patch('/users/{user}', [API\Admin\UserController::class, 'update']);
-    Route::delete('/users/{user}', [API\Admin\UserController::class, 'destroy']);
+    Route::apiResource('users', API\Admin\UserController::class)->only(['index', 'show']);
     Route::apiResource('orders', API\Admin\OrderController::class)->only(['index', 'show']);
     Route::apiResource('payments', API\Admin\PaymentController::class)->only(['index', 'show']);
 
