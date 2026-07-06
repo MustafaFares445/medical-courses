@@ -52,6 +52,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
         ->middleware('signed');
     Route::apiResource('books', API\Admin\TextbookController::class);
     Route::apiResource('articles', API\Admin\EditorialController::class);
+    Route::apiResource('admins', API\Admin\AdminUserController::class)
+        ->middleware(\App\Http\Middleware\SuperAdminMiddleware::class);
+    Route::patch('users/{user}/active', [API\Admin\UserController::class, 'updateActive']);
     Route::apiResource('users', API\Admin\UserController::class)->only(['index', 'show']);
     Route::apiResource('orders', API\Admin\OrderController::class)->only(['index', 'show']);
     Route::apiResource('payments', API\Admin\PaymentController::class)->only(['index', 'show']);

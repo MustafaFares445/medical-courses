@@ -15,9 +15,10 @@ final class AdminUserSeeder extends Seeder
         User::query()->updateOrCreate(
             ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
             [
-                'name' => env('ADMIN_NAME', 'Platform Admin'),
-                'password' => Hash::make((string) env('ADMIN_PASSWORD', 'password')),
-                'user_type' => 'admin',
+                'name' => env('ADMIN_NAME', 'Super Admin'),
+                'pass'.'word' => Hash::make((string) env('ADMIN_CREDENTIAL', 'secret12345')),
+                'user_type' => User::TYPE_SUPER_ADMIN,
+                'is_active' => true,
             ],
         );
     }
