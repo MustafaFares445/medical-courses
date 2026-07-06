@@ -11,9 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class AdminMiddleware
 {
-    /**
-     * @param  Closure(Request): Response  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
@@ -22,7 +19,9 @@ final class AdminMiddleware
             return ApiResponse::error('Unauthenticated.', Response::HTTP_UNAUTHORIZED);
         }
 
-        if (($user->user_type ?? null) !== 'admin') {
+        $canAccessDashboard = $user->is_active === true && $user->isAdmin();
+
+        if ($canAccessDashboard === false) {
             return ApiResponse::error('Forbidden.', Response::HTTP_FORBIDDEN);
         }
 
