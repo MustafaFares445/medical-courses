@@ -20,8 +20,8 @@ Route::middleware('guest')->group(function (): void {
 Route::get('/categories', [API\CategoryController::class, 'index']);
 Route::get('/courses', [API\CourseController::class, 'index']);
 Route::get('/courses/{course:slug}', [API\CourseController::class, 'show']);
-Route::get('/books', [API\TextbookController::class, 'index']);
-Route::get('/books/{book:slug}', [API\TextbookController::class, 'show']);
+Route::get('/books', [API\BookController::class, 'index']);
+Route::get('/books/{book:slug}', [API\BookController::class, 'show']);
 Route::get('/articles', [API\ArticleController::class, 'index']);
 Route::get('/articles/{article:slug}', [API\ArticleController::class, 'show']);
 
@@ -47,6 +47,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     Route::apiResource('categories', API\Admin\CategoryController::class);
     Route::apiResource('courses', API\Admin\CourseController::class);
+    Route::get('/books/{book}/file', [API\Admin\TextbookController::class, 'file'])
+        ->name('admin.books.file')
+        ->middleware('signed');
     Route::apiResource('books', API\Admin\TextbookController::class);
     Route::apiResource('articles', API\Admin\EditorialController::class);
     Route::apiResource('users', API\Admin\UserController::class)->only(['index', 'show']);
