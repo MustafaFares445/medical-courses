@@ -64,16 +64,15 @@ final class Book extends Model implements HasMedia
             ->singleFile()
             ->useDisk((string) env('MEDIA_DISK_PUBLIC', 'media_public'));
 
-        $disk = 'local';
-
-        $this->addMediaCollection('book'.'-file')
+        $this->addMediaCollection('book-file')
             ->singleFile()
-            ->useDisk($disk);
+            ->useDisk((string) env('MEDIA_DISK_PRIVATE', 'local'));
     }
 
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('cover-card')
+            ->performOnCollections('cover')
             ->width(480)
             ->height(640)
             ->nonQueued();
