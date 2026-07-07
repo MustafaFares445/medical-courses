@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\ToggleUserActiveRequest;
 use App\Http\Requests\Admin\UserFilterRequest;
 use App\Http\Resources\Admin\UserAdminResource;
@@ -44,6 +45,19 @@ final class UserController extends Controller
             $query->orderBy($request->sortColumnName(), $request->sortDirectionName())
                 ->paginate($request->perPage())
         );
+    }
+
+    public function store(StoreUserRequest $request): UserAdminResource
+    {
+        $user = User::query()->create([
+            'name' => $request->string('name')->toString(),
+            'email' => $request->string('email')->toString(),
+            'password' => $request->string('password')->toString(),
+            'user_type' => User::TYPE_STUDENT,
+            'is_active' => $request->boolean('isActive', true),
+        ]);
+
+        return UserAdminResource::make($user->loadCount(['orders', 'courseAccesses', 'bookAccesses']));
     }
 
     public function show(User $user): UserAdminResource
