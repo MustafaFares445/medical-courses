@@ -25,6 +25,8 @@ final class PurchasedCourseResource extends JsonResource
             'slug' => $this->slug,
             'shortDescription' => $this->localized('short_description', $locale),
             'description' => $this->localized('description', $locale),
+            'price' => $this->price,
+            'currency' => $this->currency,
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'thumbnail' => $image,
             'sections' => $this->sections->map(fn ($section) => [

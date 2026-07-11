@@ -12,27 +12,61 @@ use Illuminate\Validation\Rule;
 
 final class BookRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     protected function prepareForValidation(): void
     {
         $source = Locale::slugSource($this->input('title'));
         $slug = $this->input('slug');
-        if ($source !== '' && (! is_string($slug) || $slug === '')) { $this->merge(['slug' => Str::slug($source)]); }
+
+        if ($source !== '' && (! is_string($slug) || $slug === '')) {
+            $this->merge(['slug' => Str::slug($source)]);
+        }
+
+        $currency = $this->input('currency');
+
+        if (is_string($currency)) {
+            $this->merge(['currency' => strtoupper($currency)]);
+        }
     }
 
     public function rules(): array
     {
         $book = $this->route('book');
         $required = $this->isMethod('post') ? 'required' : 'sometimes';
+        $platformCurrency = strtoupper((string) config('services.stripe.currency', 'usd'));
+
         return [
-            'categoryId' => ['sometimes','nullable',Rule::exists('categories','id')->where(fn ($query) => $query->where('type','book'))],
-            'title' => [$required,'array'], 'title.en' => [$required,'string','max:255'], 'title.ar' => ['sometimes','nullable','string','max:255'],
-            'slug' => ['sometimes','nullable','string','max:255',Rule::unique('books','slug')->ignore($book instanceof Book ? $book->id : null)],
-            'shortDescription' => ['sometimes','nullable','array'], 'shortDescription.en' => ['sometimes','nullable','string','max:1000'], 'shortDescription.ar' => ['sometimes','nullable','string','max:1000'],
-            'description' => ['sometimes','nullable','array'], 'description.en' => ['sometimes','nullable','string'], 'description.ar' => ['sometimes','nullable','string'],
-            'price' => [$required,'numeric','min:0'], 'currency' => [$required,'string','size:3'], 'externalFileUrl' => ['sometimes','nullable','url','max:2048'],
-            'status' => [$required,'string','in:draft,published,hidden'], 'cover' => ['sometimes','nullable','file','max:4096'], 'bookFile' => ['sometimes','nullable','file','max:51200'],
+            'categoryId' => [
+                'sometimes',
+                'nullable',
+                Rule::exists('categories', 'id')->where(fn ($query) => $query->where('type', 'book')),
+            ],
+            'title' => [$required, 'array'],
+            'title.en' => [$required, 'string', 'max:255'],
+            'title.ar' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'slug' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('books', 'slug')->ignore($book instanceof Book ? $book->id : null),
+            ],
+            'shortDescription' => ['sometimes', 'nullable', 'array'],
+            'shortDescription.en' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'shortDescription.ar' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'description' => ['sometimes', 'nullable', 'array'],
+            'description.en' => ['sometimes', 'nullable', 'string'],
+            'description.ar' => ['sometimes', 'nullable', 'string'],
+            'price' => [$required, 'numeric', 'min:0'],
+            'currency' => [$required, 'string', 'size:3', Rule::in([$platformCurrency])],
+            'externalFileUrl' => ['sometimes', 'nullable', 'url', 'max:2048'],
+            'status' => [$required, 'string', 'in:draft,published,hidden'],
+            'cover' => ['sometimes', 'nullable', 'file', 'max:4096'],
+            'bookFile' => ['sometimes', 'nullable', 'file', 'max:51200'],
         ];
     }
 }
