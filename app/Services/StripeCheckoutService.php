@@ -7,7 +7,7 @@ namespace App\Services;
 use App\Models\Order;
 use Stripe\StripeClient;
 
-final class StripeCheckoutService
+class StripeCheckoutService
 {
     public function createSession(Order $order, array $lineItems, string $successUrl, string $cancelUrl): array
     {
