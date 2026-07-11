@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         id: install
         continue-on-error: true
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader > composer.log 2>&1
+        run: composer update --no-interaction --prefer-dist --no-progress --optimize-autoloader > composer.log 2>&1
 
       - name: Prepare environment
         id: prepare
