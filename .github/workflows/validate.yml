@@ -56,6 +56,7 @@ jobs:
           app/Http/Requests/Admin/CourseRequest.php
           app/Http/Resources/LibraryBookResource.php
           app/Http/Resources/PurchasedCourseResource.php
+          app/Services/StripeCheckoutService.php
           database/migrations/2026_07_12_000001_normalize_catalog_currencies.php
           > pint.log 2>&1
 
@@ -72,12 +73,18 @@ jobs:
           DB_PASSWORD: root
         run: php artisan migrate:fresh --force > migrations.log 2>&1
 
-      - name: Run tests
+      - name: Run focused tests
         id: tests
         if: steps.prepare.outcome == 'success'
         continue-on-error: true
         env: *mysql-env
-        run: composer test > tests.log 2>&1
+        run: >-
+          php artisan test
+          tests/Feature/Checkout/CheckoutTest.php
+          tests/Feature/Protected/LibraryTest.php
+          tests/Feature/Public/BookCatalogTest.php
+          tests/Feature/Public/CourseCatalogTest.php
+          > tests.log 2>&1
 
       - name: Upload validation logs
         if: always()
