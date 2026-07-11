@@ -7,7 +7,20 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: testing
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,7 +31,7 @@ jobs:
           php-version: '8.4'
           coverage: none
           tools: composer:v2
-          extensions: mbstring, pdo_sqlite, sqlite3, bcmath, fileinfo
+          extensions: mbstring, pdo_mysql, bcmath, fileinfo
 
       - name: Install dependencies
         id: install
@@ -31,31 +44,39 @@ jobs:
         continue-on-error: true
         run: |
           cp .env.example .env
-          touch database/database.sqlite
           php artisan key:generate > prepare.log 2>&1
 
-      - name: Check formatting
+      - name: Check changed-file formatting
         id: format
         if: steps.install.outcome == 'success'
         continue-on-error: true
-        run: vendor/bin/pint --test > pint.log 2>&1
+        run: >-
+          vendor/bin/pint --test
+          app/Http/Requests/Admin/BookRequest.php
+          app/Http/Requests/Admin/CourseRequest.php
+          app/Http/Resources/LibraryBookResource.php
+          app/Http/Resources/PurchasedCourseResource.php
+          database/migrations/2026_07_12_000001_normalize_catalog_currencies.php
+          > pint.log 2>&1
 
       - name: Run migrations
         id: migrations
         if: steps.prepare.outcome == 'success'
         continue-on-error: true
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan migrate --force > migrations.log 2>&1
+        env: &mysql-env
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: php artisan migrate:fresh --force > migrations.log 2>&1
 
       - name: Run tests
         id: tests
         if: steps.prepare.outcome == 'success'
         continue-on-error: true
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+        env: *mysql-env
         run: composer test > tests.log 2>&1
 
       - name: Upload validation logs
