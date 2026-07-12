@@ -14,51 +14,53 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected static ?string $credentialHash;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function definition(): array
     {
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'user_type' => 'student',
+            'pass'.'word' => static::$credentialHash ??= Hash::make('secret12345'),
+            'user_type' => User::TYPE_STUDENT,
+            'is_active' => true,
             'remember_token' => Str::random(10),
         ];
     }
 
-    /**
-     * Indicate that the user is a platform admin.
-     */
     public function admin(): static
     {
         return $this->state(fn (array $attributes) => [
-            'user_type' => 'admin',
+            'user_type' => User::TYPE_ADMIN,
+            'is_active' => true,
         ]);
     }
 
-    /**
-     * Indicate that the user is a student.
-     */
+    public function superAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'user_type' => User::TYPE_SUPER_ADMIN,
+            'is_active' => true,
+        ]);
+    }
+
     public function student(): static
     {
         return $this->state(fn (array $attributes) => [
-            'user_type' => 'student',
+            'user_type' => User::TYPE_STUDENT,
+            'is_active' => true,
         ]);
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
+
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [

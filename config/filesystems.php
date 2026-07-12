@@ -58,14 +58,15 @@ return [
             'report' => false,
         ],
 
-        // 'media_private' => [
-        //     'driver' => env('MEDIA_PRIVATE_DRIVER', 'local'),
-        //     'root' => storage_path('app/private/media'),
-        //     'serve' => true,
-        //     'visibility' => 'private',
-        //     'throw' => false,
-        //     'report' => false,
-        // ],
+        'media_private' => [
+            'driver' => env('MEDIA_PRIVATE_DRIVER', 'local'),
+            'root' => storage_path('app/private/media'),
+            'serve' => true,
+            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/private-media',
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

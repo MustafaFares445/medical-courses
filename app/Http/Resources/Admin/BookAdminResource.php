@@ -6,11 +6,15 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 
 final class BookAdminResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        [$bookFileUrl, $bookFileUrlExpiresAt] = $this->temporaryBookFileAccess();
+
         return [
             'id' => $this->id,
             'categoryId' => $this->category_id,
@@ -24,11 +28,28 @@ final class BookAdminResource extends JsonResource
             'status' => $this->status,
             'publishedAt' => $this->published_at?->toISOString(),
             'cover' => $this->getFirstMediaUrl('cover') ?: null,
-            'hasBookFile' => $this->getFirstMedia('book-file') !== null,
+            'hasBookFile' => $this->hasMedia('book-file'),
+            'bookFileUrl' => $bookFileUrl,
+            'bookFileUrlExpiresAt' => $bookFileUrlExpiresAt,
             'category' => CategoryAdminResource::make($this->whenLoaded('category')),
             'accessesCount' => $this->whenCounted('accesses'),
             'createdAt' => $this->created_at?->toISOString(),
             'updatedAt' => $this->updated_at?->toISOString(),
+        ];
+    }
+
+    /** @return array{0: ?string, 1: ?string} */
+    private function temporaryBookFileAccess(): array
+    {
+        if (! $this->hasMedia('book-file')) {
+            return [null, null];
+        }
+
+        $expiresAt = Carbon::now()->addMinutes(15);
+
+        return [
+            URL::temporarySignedRoute('admin.books.file', $expiresAt, ['book' => $this->id]),
+            $expiresAt->toISOString(),
         ];
     }
 }

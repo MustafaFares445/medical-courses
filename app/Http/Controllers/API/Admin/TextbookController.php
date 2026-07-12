@@ -13,7 +13,10 @@ use App\Models\Book;
 use App\Services\Admin\BookService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class TextbookController extends Controller
 {
@@ -50,6 +53,16 @@ final class TextbookController extends Controller
     {
         $service->delete($book);
         return ApiResponse::noContent();
+    }
+
+    public function file(Request $request, Book $book): StreamedResponse
+    {
+        abort_unless($request->hasValidSignature(), 403);
+
+        $media = $book->getFirstMedia('book-file');
+        abort_if($media === null, 404, 'Book file is not available.');
+
+        return Storage::disk($media->disk)->download($media->getPathRelativeToRoot(), $media->file_name);
     }
 
     private function data(array $validated): BookData

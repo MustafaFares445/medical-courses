@@ -9,7 +9,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class AdminMiddleware
+final class SuperAdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
@@ -19,9 +19,7 @@ final class AdminMiddleware
             return ApiResponse::error('Unauthenticated.', Response::HTTP_UNAUTHORIZED);
         }
 
-        $canAccessDashboard = $user->is_active === true && $user->isAdmin();
-
-        if ($canAccessDashboard === false) {
+        if ($user->is_active !== true || ! $user->isSuperAdmin()) {
             return ApiResponse::error('Forbidden.', Response::HTTP_FORBIDDEN);
         }
 
