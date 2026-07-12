@@ -23,7 +23,9 @@ final class LessonAdminResource extends JsonResource
             'summary' => $this->summary,
             'content' => $this->content,
             'videoUrl' => $this->video_url,
-            'lessonVideo' => $this->getFirstMediaUrl('lesson-video') ?: null,
+            'lessonVideo' => $this->getFirstMedia('lesson-video') !== null
+                ? route('admin.lessons.video', ['lesson' => $this->id])
+                : null,
             'sortOrder' => $this->sort_order,
             'status' => $this->status,
             'section' => CourseSectionAdminResource::make($this->whenLoaded('section')),

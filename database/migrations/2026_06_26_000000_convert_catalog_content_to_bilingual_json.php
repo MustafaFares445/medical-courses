@@ -19,6 +19,10 @@ return new class extends Migration
 
     public function up(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         foreach ($this->columns as $table => $columns) {
             foreach ($columns as $column) {
                 $this->wrapExistingText($table, $column);
@@ -29,6 +33,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            return;
+        }
+
         foreach ($this->columns as $table => $columns) {
             foreach ($columns as $column) {
                 DB::statement("ALTER TABLE {$table} MODIFY {$column} LONGTEXT NULL");

@@ -20,23 +20,20 @@ Route::middleware('guest')->group(function (): void {
 Route::get('/categories', [API\CategoryController::class, 'index']);
 Route::get('/courses', [API\CourseController::class, 'index']);
 Route::get('/courses/{course:slug}', [API\CourseController::class, 'show']);
-Route::get('/books', [API\TextbookController::class, 'index']);
-Route::get('/books/{book:slug}', [API\TextbookController::class, 'show']);
+Route::get('/books', [API\BookController::class, 'index']);
+Route::get('/books/{book:slug}', [API\BookController::class, 'show']);
 Route::get('/articles', [API\ArticleController::class, 'index']);
 Route::get('/articles/{article:slug}', [API\ArticleController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/auth/logout', [API\AuthController::class, 'logout']);
-    Route::get('/me', [API\MeController::class, 'show']);
+    Route::get('/me', [API\CurrentUserController::class, 'show']);
     Route::post('/checkout', [API\CheckoutController::class, 'store']);
     Route::get('/my/library', API\LibraryController::class);
 
     Route::prefix('my')->group(function (): void {
         Route::get('/courses/{course}', [API\PurchasedCourseController::class, 'show']);
-        Route::get('/courses/{course}/lessons/{lesson}', [API\PurchasedCourseController::class, 'lesson']);
-        Route::get('/lessons/{lesson}/video', [API\LessonVideoController::class, 'show'])
-            ->name('lessons.video.show')
-            ->middleware('signed');
+        Route::get('/courses/{course}/lessons/{lesson}', [API\ProtectedLessonController::class, 'show']);
         Route::get('/books/{book}/access', [API\BookAccessController::class, 'show']);
     });
 });
@@ -61,6 +58,8 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 
     Route::get('/course-sections/{section}/lessons', [API\Admin\LessonController::class, 'index']);
     Route::post('/course-sections/{section}/lessons', [API\Admin\LessonController::class, 'store']);
+    Route::get('/lessons/{lesson}/video', [API\Admin\LessonVideoController::class, 'show'])
+        ->name('admin.lessons.video');
     Route::patch('/lessons/{lesson}', [API\Admin\LessonController::class, 'update']);
     Route::delete('/lessons/{lesson}', [API\Admin\LessonController::class, 'destroy']);
 });

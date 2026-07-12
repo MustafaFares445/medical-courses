@@ -10,11 +10,15 @@ use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Services\LessonAccessService;
+use App\Services\LessonVideoAccessService;
 use Illuminate\Http\Request;
 
 final class ProtectedLessonController extends Controller
 {
-    public function __construct(private readonly LessonAccessService $lessons) {}
+    public function __construct(
+        private readonly LessonAccessService $lessons,
+        private readonly LessonVideoAccessService $videos,
+    ) {}
 
     public function show(Request $request, Course $course, Lesson $lesson): ProtectedLessonResource
     {
@@ -25,8 +29,9 @@ final class ProtectedLessonController extends Controller
         abort_unless($lesson->status === 'published', 404);
         abort_unless($this->lessons->hasCourseAccess($user, $course), 403);
 
-        $lesson->load('section');
+        $lesson->load(['section', 'media']);
 
-        return ProtectedLessonResource::make($lesson);
+        return ProtectedLessonResource::make($lesson)
+            ->withVideoMediaUrl($this->videos->temporaryUrlFor($lesson));
     }
 }

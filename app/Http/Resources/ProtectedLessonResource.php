@@ -10,6 +10,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 final class ProtectedLessonResource extends JsonResource
 {
+    private ?string $videoMediaUrl = null;
+
+    public function withVideoMediaUrl(?string $videoMediaUrl): self
+    {
+        $this->videoMediaUrl = $videoMediaUrl;
+
+        return $this;
+    }
+
     public function toArray(Request $request): array
     {
         $locale = Locale::fromRequest($request);
@@ -21,7 +30,7 @@ final class ProtectedLessonResource extends JsonResource
             'summary' => $this->localized('summary', $locale),
             'content' => $this->localized('content', $locale),
             'videoUrl' => $this->video_url,
-            'videoMediaUrl' => null,
+            'videoMediaUrl' => $this->videoMediaUrl,
             'courseId' => $this->section?->course_id,
             'sectionId' => $this->course_section_id,
             'sortOrder' => $this->sort_order,

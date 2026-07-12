@@ -28,6 +28,38 @@ it('allows a purchased user to access a published lesson', function (): void {
         ->assertJsonPath('data.videoUrl', 'https://video.example.test/lesson');
 });
 
+it('returns a temporary URL for an uploaded lesson video to a purchased user', function (): void {
+    $user = User::factory()->student()->create();
+    $course = Course::factory()->published()->create();
+    $section = CourseSection::factory()->for($course)->create();
+    $lesson = Lesson::factory()->published()->for($section, 'section')->create();
+    $lesson
+        ->addMediaFromString('video content')
+        ->usingFileName('lesson.mp4')
+        ->toMediaCollection('lesson-video');
+
+    CourseAccess::factory()->create(['user_id' => $user->id, 'course_id' => $course->id]);
+    Sanctum::actingAs($user);
+
+    $response = $this->getJson("/api/my/courses/{$course->id}/lessons/{$lesson->id}")
+        ->assertOk();
+
+    $videoMediaUrl = $response->json('data.videoMediaUrl');
+
+    expect($videoMediaUrl)
+        ->toBeString()
+        ->toContain('/storage/')
+        ->toContain('expires=')
+        ->toContain('signature=');
+
+    $parts = parse_url($videoMediaUrl);
+    $signedPath = ($parts['path'] ?? '').(isset($parts['query']) ? '?'.$parts['query'] : '');
+
+    $this->get($signedPath, ['Origin' => 'http://10.5.0.2:3000'])
+        ->assertOk()
+        ->assertHeader('Access-Control-Allow-Origin', 'http://10.5.0.2:3000');
+});
+
 it('denies an unpurchased user from protected lesson content', function (): void {
     $user = User::factory()->student()->create();
     $course = Course::factory()->published()->create();
