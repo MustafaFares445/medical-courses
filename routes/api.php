@@ -24,6 +24,9 @@ Route::get('/books', [API\BookController::class, 'index']);
 Route::get('/books/{book:slug}', [API\BookController::class, 'show']);
 Route::get('/articles', [API\ArticleController::class, 'index']);
 Route::get('/articles/{article:slug}', [API\ArticleController::class, 'show']);
+Route::get('/books/{book}/file', [API\BookAccessController::class, 'download'])
+    ->name('books.file')
+    ->middleware('signed');
 
 Route::middleware('auth:sanctum')->group(function (): void {
     Route::post('/auth/logout', [API\AuthController::class, 'logout']);

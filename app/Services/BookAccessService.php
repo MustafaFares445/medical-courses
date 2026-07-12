@@ -8,8 +8,8 @@ use App\Models\Book;
 use App\Models\BookAccess;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\URL;
 use RuntimeException;
-use Throwable;
 
 final class BookAccessService
 {
@@ -43,17 +43,11 @@ final class BookAccessService
 
         $expiresAt = Carbon::now()->addMinutes(15);
 
-        try {
-            $url = $media->getTemporaryUrl($expiresAt);
-        } catch (Throwable) {
-            throw new RuntimeException('Book file is not available.');
-        }
-
         return [
             'bookId' => $book->id,
             'title' => $book->title,
             'accessType' => 'signed_url',
-            'accessUrl' => $url,
+            'accessUrl' => URL::temporarySignedRoute('books.file', $expiresAt, ['book' => $book->id]),
             'expiresAt' => $expiresAt->toISOString(),
         ];
     }
