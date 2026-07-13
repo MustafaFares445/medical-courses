@@ -8,28 +8,28 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 
-it('allows a purchased user to access a protected external book link', function (): void {
+it('returns a non-empty signed URL for a purchased uploaded book', function (): void {
+    Storage::fake('local');
+
     $user = User::factory()->student()->create();
-    $book = Book::factory()->published()->create([
-        'title' => 'Clinical Book',
-        'external_file_url' => 'https://files.example.test/clinical-book.pdf',
-    ]);
+    $book = Book::factory()->published()->create();
+    $book->addMediaFromString('book content')->usingFileName('clinical-book.pdf')->toMediaCollection('book-file');
 
     BookAccess::factory()->create(['user_id' => $user->id, 'book_id' => $book->id]);
     Sanctum::actingAs($user);
 
-    $this->getJson("/api/my/books/{$book->id}/access")
+    $response = $this->getJson("/api/my/books/{$book->id}/access")
         ->assertOk()
         ->assertJsonPath('data.bookId', $book->id)
-        ->assertJsonPath('data.accessType', 'external_url')
-        ->assertJsonPath('data.accessUrl', 'https://files.example.test/clinical-book.pdf');
+        ->assertJsonPath('data.accessType', 'signed_url');
+
+    expect($response->json('data.accessUrl'))->toBeString()->not->toBeEmpty();
+    expect($response->json('data.expiresAt'))->toBeString()->not->toBeEmpty();
 });
 
 it('denies an unpurchased user from protected book access', function (): void {
     $user = User::factory()->student()->create();
-    $book = Book::factory()->published()->create([
-        'external_file_url' => 'https://files.example.test/clinical-book.pdf',
-    ]);
+    $book = Book::factory()->published()->create();
 
     Sanctum::actingAs($user);
 
@@ -38,9 +38,7 @@ it('denies an unpurchased user from protected book access', function (): void {
 });
 
 it('requires authentication for protected book access', function (): void {
-    $book = Book::factory()->published()->create([
-        'external_file_url' => 'https://files.example.test/clinical-book.pdf',
-    ]);
+    $book = Book::factory()->published()->create();
 
     $this->getJson("/api/my/books/{$book->id}/access")
         ->assertUnauthorized();
@@ -48,7 +46,7 @@ it('requires authentication for protected book access', function (): void {
 
 it('returns not found when a purchased book has no available file', function (): void {
     $user = User::factory()->student()->create();
-    $book = Book::factory()->published()->create(['external_file_url' => null]);
+    $book = Book::factory()->published()->create();
 
     BookAccess::factory()->create(['user_id' => $user->id, 'book_id' => $book->id]);
     Sanctum::actingAs($user);
@@ -61,7 +59,7 @@ it('returns a working signed download URL for an uploaded purchased book', funct
     Storage::fake('local');
 
     $user = User::factory()->student()->create();
-    $book = Book::factory()->published()->create(['external_file_url' => null]);
+    $book = Book::factory()->published()->create();
     $book
         ->addMediaFromString('book content')
         ->usingFileName('clinical-book.pdf')

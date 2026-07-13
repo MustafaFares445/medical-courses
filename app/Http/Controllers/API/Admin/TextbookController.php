@@ -23,18 +23,32 @@ final class TextbookController extends Controller
     public function index(BookFilterRequest $request): AnonymousResourceCollection
     {
         $query = Book::query()->with('category')->withCount('accesses')->search($request->search());
-        if ($request->status() !== null) { $query->where('status', $request->status()); }
-        if ($request->categoryId() !== null) { $query->where('category_id', $request->categoryId()); }
-        if ($request->priceMin() !== null) { $query->where('price', '>=', $request->priceMin()); }
-        if ($request->priceMax() !== null) { $query->where('price', '<=', $request->priceMax()); }
-        if ($request->createdAfter() !== null) { $query->whereDate('created_at', '>=', $request->createdAfter()); }
-        if ($request->createdBefore() !== null) { $query->whereDate('created_at', '<=', $request->createdBefore()); }
+        if ($request->status() !== null) {
+            $query->where('status', $request->status());
+        }
+        if ($request->categoryId() !== null) {
+            $query->where('category_id', $request->categoryId());
+        }
+        if ($request->priceMin() !== null) {
+            $query->where('price', '>=', $request->priceMin());
+        }
+        if ($request->priceMax() !== null) {
+            $query->where('price', '<=', $request->priceMax());
+        }
+        if ($request->createdAfter() !== null) {
+            $query->whereDate('created_at', '>=', $request->createdAfter());
+        }
+        if ($request->createdBefore() !== null) {
+            $query->whereDate('created_at', '<=', $request->createdBefore());
+        }
+
         return BookAdminResource::collection($query->orderBy($request->sortColumnName(), $request->sortDirectionName())->paginate($request->perPage()));
     }
 
     public function store(BookRequest $request, BookService $service): JsonResponse
     {
         $book = $service->create($this->data($request->validated()), $request->file('cover'), $request->file('bookFile'));
+
         return BookAdminResource::make($this->loadBook($book))->response()->setStatusCode(201);
     }
 
@@ -46,12 +60,14 @@ final class TextbookController extends Controller
     public function update(BookRequest $request, Book $book, BookService $service): BookAdminResource
     {
         $book = $service->update($book, $this->data($request->validated()), $request->file('cover'), $request->file('bookFile'));
+
         return BookAdminResource::make($this->loadBook($book));
     }
 
     public function destroy(Book $book, BookService $service): JsonResponse
     {
         $service->delete($book);
+
         return ApiResponse::noContent();
     }
 
@@ -75,7 +91,6 @@ final class TextbookController extends Controller
             description: array_key_exists('description', $validated) && is_array($validated['description']) ? $validated['description'] : null,
             price: array_key_exists('price', $validated) ? (string) $validated['price'] : null,
             currency: is_string($validated['currency'] ?? null) ? strtoupper($validated['currency']) : null,
-            externalFileUrl: array_key_exists('externalFileUrl', $validated) && is_string($validated['externalFileUrl']) ? $validated['externalFileUrl'] : null,
             status: is_string($validated['status'] ?? null) ? $validated['status'] : null,
             fields: array_keys($validated),
         );

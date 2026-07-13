@@ -16,7 +16,6 @@ final class BookData extends Data
         public readonly ?array $description = null,
         public readonly ?string $price = null,
         public readonly ?string $currency = null,
-        public readonly ?string $externalFileUrl = null,
         public readonly ?string $status = null,
         public readonly array $fields = [],
     ) {}

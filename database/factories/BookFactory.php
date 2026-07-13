@@ -37,7 +37,6 @@ final class BookFactory extends Factory
             ],
             'price' => fake()->randomFloat(2, 5, 150),
             'currency' => 'USD',
-            'external_file_url' => null,
             'status' => 'draft',
             'published_at' => null,
         ];

@@ -117,7 +117,6 @@ final class DemoContentSeeder extends Seeder
                 'description' => ['en' => 'Practical summaries, checklists, and clinical approaches for everyday medical learning.', 'ar' => 'ملخصات عملية وقوائم تحقق ومناهج سريرية للتعلم الطبي اليومي.'],
                 'price' => '29.00',
                 'currency' => 'USD',
-                'external_file_url' => 'https://example.com/private/books/clinical-handbook.pdf',
                 'status' => 'published',
                 'published_at' => now()->subDays(9),
             ]);
@@ -130,7 +129,6 @@ final class DemoContentSeeder extends Seeder
                 'description' => ['en' => 'A focused anatomy resource connecting structures to examination and clinical practice.', 'ar' => 'مرجع تشريح مركز يربط التراكيب بالفحص والممارسة السريرية.'],
                 'price' => '24.00',
                 'currency' => 'USD',
-                'external_file_url' => 'https://example.com/private/books/applied-anatomy-notes.pdf',
                 'status' => 'published',
                 'published_at' => now()->subDays(7),
             ]);
@@ -143,7 +141,6 @@ final class DemoContentSeeder extends Seeder
                 'description' => ['en' => 'This seeded record should not appear in public book catalogs.', 'ar' => 'هذا السجل التجريبي لا يجب أن يظهر في قوائم الكتب العامة.'],
                 'price' => '19.00',
                 'currency' => 'USD',
-                'external_file_url' => 'https://example.com/private/books/hidden-checklist.pdf',
                 'status' => 'hidden',
                 'published_at' => null,
             ]);

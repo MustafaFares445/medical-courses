@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Services\BookAccessService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class BookAccessController extends Controller
@@ -23,11 +22,7 @@ final class BookAccessController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        try {
-            return BookAccessResource::make($this->books->accessFor($user, $book));
-        } catch (RuntimeException) {
-            abort(404, 'Book file is not available.');
-        }
+        return BookAccessResource::make($this->books->accessFor($user, $book));
     }
 
     public function download(Request $request, Book $book): StreamedResponse

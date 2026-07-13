@@ -24,7 +24,6 @@ final class BookAdminResource extends JsonResource
             'description' => $this->translations('description'),
             'price' => $this->price,
             'currency' => $this->currency,
-            'externalFileUrl' => $this->external_file_url,
             'status' => $this->status,
             'publishedAt' => $this->published_at?->toISOString(),
             'cover' => $this->getFirstMediaUrl('cover') ?: null,

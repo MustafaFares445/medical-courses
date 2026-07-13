@@ -47,7 +47,6 @@ it('adds required content columns', function (): void {
             'title',
             'slug',
             'price',
-            'external_file_url',
             'status',
             'deleted_at',
         ]))->toBeTrue();

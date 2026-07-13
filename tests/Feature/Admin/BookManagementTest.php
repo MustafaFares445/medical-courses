@@ -47,7 +47,6 @@ it('lists books with filters and camel case fields', function (): void {
                 'description',
                 'price',
                 'currency',
-                'externalFileUrl',
                 'status',
                 'publishedAt',
                 'cover',
@@ -60,31 +59,6 @@ it('lists books with filters and camel case fields', function (): void {
             'links',
             'meta',
         ]);
-});
-
-it('creates a published book with a protected external file url', function (): void {
-    Sanctum::actingAs(User::factory()->admin()->create());
-
-    $category = Category::factory()->book()->create();
-
-    $this->postJson('/api/admin/books', [
-        'categoryId' => $category->id,
-        'title' => ['en' => 'Clinical Anatomy Handbook', 'ar' => null],
-        'shortDescription' => ['en' => 'Short book summary', 'ar' => null],
-        'description' => ['en' => 'Full book details', 'ar' => null],
-        'price' => '29.00',
-        'currency' => 'usd',
-        'externalFileUrl' => 'https://secure.example.com/file.pdf',
-        'status' => 'published',
-    ])->assertCreated()
-        ->assertJsonPath('data.title.en', 'Clinical Anatomy Handbook')
-        ->assertJsonPath('data.slug', 'clinical-anatomy-handbook')
-        ->assertJsonPath('data.status', 'published')
-        ->assertJsonPath('data.currency', 'USD')
-        ->assertJsonPath('data.hasBookFile', false)
-        ->assertJsonPath('data.bookFileUrl', null);
-
-    expect(Book::query()->where('slug', 'clinical-anatomy-handbook')->first()?->published_at)->not->toBeNull();
 });
 
 it('creates a published book with an uploaded protected book file and returns an admin file url', function (): void {
@@ -117,16 +91,16 @@ it('creates a published book with an uploaded protected book file and returns an
     $this->get($path.'?'.$query)->assertOk();
 });
 
-it('requires file access information before publishing a book', function (): void {
+it('requires a local book file when creating a book', function (): void {
     Sanctum::actingAs(User::factory()->admin()->create());
 
     $this->postJson('/api/admin/books', [
         'title' => ['en' => 'No File Book', 'ar' => null],
         'price' => '29.00',
         'currency' => 'USD',
-        'status' => 'published',
+        'status' => 'draft',
     ])->assertUnprocessable()
-        ->assertJsonValidationErrors(['externalFileUrl']);
+        ->assertJsonValidationErrors(['bookFile']);
 });
 
 it('updates a book', function (): void {
@@ -137,13 +111,13 @@ it('updates a book', function (): void {
         'slug' => 'old-book',
         'status' => 'draft',
     ]);
+    $book->addMediaFromString('book content')->usingFileName('old-book.pdf')->toMediaCollection('book-file');
 
     $this->patchJson("/api/admin/books/{$book->id}", [
         'title' => ['en' => 'Updated Book', 'ar' => null],
         'slug' => 'updated-book',
         'price' => '39.00',
         'currency' => 'USD',
-        'externalFileUrl' => 'https://secure.example.com/updated.pdf',
         'status' => 'hidden',
     ])->assertOk()
         ->assertJsonPath('data.title.en', 'Updated Book')
@@ -158,10 +132,9 @@ it('validates book payloads', function (): void {
         'title' => '',
         'price' => -1,
         'currency' => 'US',
-        'externalFileUrl' => 'not-a-url',
         'status' => 'invalid',
     ])->assertUnprocessable()
-        ->assertJsonValidationErrors(['title', 'price', 'currency', 'externalFileUrl', 'status']);
+        ->assertJsonValidationErrors(['title', 'price', 'currency', 'bookFile', 'status']);
 });
 
 it('soft deletes purchased books', function (): void {

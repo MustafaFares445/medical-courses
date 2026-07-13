@@ -24,7 +24,7 @@ final class BookDetailResource extends JsonResource
             'currency' => $this->currency,
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'cover' => $this->getFirstMediaUrl('cover') ?: null,
-            'hasProtectedFile' => $this->external_file_url !== null || $this->hasMedia('book-file'),
+            'hasProtectedFile' => $this->hasMedia('book-file'),
             'publishedAt' => $this->published_at?->toISOString(),
         ];
     }

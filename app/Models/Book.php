@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Models\Concerns\HasCatalogScopes;
 use App\Models\Concerns\HasTranslatableContent;
-use Database\Factories\BookFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,7 +31,6 @@ final class Book extends Model implements HasMedia
         'description',
         'price',
         'currency',
-        'external_file_url',
         'status',
         'published_at',
     ];

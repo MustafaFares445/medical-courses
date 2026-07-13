@@ -15,6 +15,8 @@ Route::post('/stripe/webhook', API\StripeWebhookController::class);
 Route::middleware('guest')->group(function (): void {
     Route::post('/auth/register', [API\AuthController::class, 'register']);
     Route::post('/auth/login', [API\AuthController::class, 'login']);
+    Route::post('/auth/forgot-password', [API\AccountRecoveryController::class, 'forgot']);
+    Route::post('/auth/reset-password', [API\AccountRecoveryController::class, 'reset']);
 });
 
 Route::get('/categories', [API\CategoryController::class, 'index']);
